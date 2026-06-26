@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推广员申请 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.status-time { font-weight:600; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0 14px; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.banner { background:linear-gradient(135deg,#FFF8F0,#FFF3E8); border-radius:10px; padding:20px 14px; text-align:center; margin-top:12px; }
+.banner-icon { font-size:40px; }
+.banner-title { font-size:15px; font-weight:600; color:#E65100; margin-top:6px; }
+.banner-desc { font-size:11px; color:#FF9800; margin-top:4px; }
+.form-card { background:#fff; border-radius:10px; padding:14px; margin-top:12px; }
+.form-label { font-size:13px; font-weight:500; color:#333; margin-bottom:6px; }
+.form-input { width:100%; background:#F5F5F5; border:0.5px solid #E8E8E8; border-radius:6px; padding:10px 12px; font-size:13px; outline:none; color:#333; transition:border-color .15s; }
+.form-input:focus { border-color:#E93323; }
+.form-input::placeholder { color:#B0B0B0; }
+.form-textarea { width:100%; background:#F5F5F5; border:0.5px solid #E8E8E8; border-radius:6px; padding:10px 12px; font-size:13px; outline:none; color:#333; resize:none; height:80px; font-family:inherit; transition:border-color .15s; }
+.form-textarea:focus { border-color:#E93323; }
+.form-textarea::placeholder { color:#B0B0B0; }
+.form-hint { font-size:10px; color:#B0B0B0; margin-top:4px; }
+.submit-btn { width:100%; background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; text-align:center; padding:13px; border-radius:22px; font-size:14px; font-weight:600; cursor:pointer; margin-top:20px; border:none; }
+.submit-btn:active { opacity:0.8; }
+.rules { background:#fff; border-radius:10px; padding:14px; margin-top:12px; }
+.rules-title { font-size:13px; font-weight:600; color:#333; margin-bottom:8px; }
+.rules-item { font-size:11px; color:#666; padding:4px 0; display:flex; align-items:flex-start; gap:6px; line-height:1.6; }
+.rules-dot { width:4px; height:4px; border-radius:50%; background:#E93323; margin-top:6px; flex-shrink:0; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 推广员申请</div>
+    <div class="scroll-content">
+      <div class="banner"><div class="banner-icon"><svg viewBox="0 0 24 24"><polygon points="12,1 15,8 22,9 17,14 18,22 12,18 6,22 7,14 2,9 9,8" fill="#FECF6A"/><circle cx="12" cy="12" r="3" fill="#FF6B35"/></svg></div><div class="banner-title">申请成为推广员</div><div class="banner-desc">分享课程赚佣金，自购省钱推广赚钱</div></div>
+      <div class="form-card">
+        <div class="form-label">真实姓名</div>
+        <input class="form-input" type="text" placeholder="请输入真实姓名">
+        <div class="form-label" style="margin-top:12px;">手机号码</div>
+        <input class="form-input" type="tel" placeholder="请输入手机号码">
+        <div class="form-label" style="margin-top:12px;">申请备注</div>
+        <textarea class="form-textarea" placeholder="请输入申请备注（选填）"></textarea>
+        <div class="form-hint">填写备注信息有助于更快通过审核</div>
+      </div>
+      <div class="rules"><div class="rules-title"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".4"/></svg> 推广员规则</div><div class="rules-item"><span class="rules-dot"></span>推广员分享课程链接，好友下单后获得佣金奖励</div><div class="rules-item"><span class="rules-dot"></span>佣金比例为实际支付金额的10%</div><div class="rules-item"><span class="rules-dot"></span>邀请下级推广员可获得邀请奖励</div><div class="rules-item"><span class="rules-dot"></span>佣金在订单完成后7天可提现</div></div>
+      <button class="submit-btn" onclick="doSubmit()">提交申请</button>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+function doSubmit() {
+  var name = document.querySelectorAll('.form-input')[0].value;
+  var phone = document.querySelectorAll('.form-input')[1].value;
+  if(!name) { showToast('请输入真实姓名'); return; }
+  if(!phone) { showToast('请输入手机号码'); return; }
+  showToast('申请提交成功');
+  setTimeout(function(){ navigateTo('09-distributor.html'); }, 1500);
+}
+</script>
+</body>
+</html>

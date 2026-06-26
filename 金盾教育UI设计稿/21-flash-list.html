@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>限时秒杀 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:transparent; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#fff; flex-shrink:0; position:relative; z-index:10; }
+.status-time { font-weight:600; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+
+/* 渐变头部 */
+.flash-hero { background:linear-gradient(160deg,#E93323 0%,#FF6B35 100%); padding:0 14px 16px; flex-shrink:0; }
+.nav-bar { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; color:#fff; padding-bottom:10px; }
+.nav-back { cursor:pointer; font-size:18px; color:#fff; }
+.nav-back:active { opacity:0.5; }
+.nav-title { font-size:17px; font-weight:700; }
+
+/* 倒计时横幅 */
+.hero-timer { display:flex; align-items:center; gap:8px; }
+.hero-timer .ht-label { font-size:13px; color:rgba(255,255,255,0.85); }
+.timer-num { background:rgba(0,0,0,0.3); padding:4px 9px; border-radius:5px; font-size:16px; font-weight:700; font-family:"SF Mono",monospace; color:#fff; }
+.timer-colon { font-weight:700; color:#fff; font-size:16px; }
+.hero-tip { font-size:11px; color:rgba(255,255,255,0.7); margin-top:6px; }
+
+/* 标签栏 */
+.session-tabs { background:#fff; display:flex; overflow-x:auto; -webkit-overflow-scrolling:touch; flex-shrink:0; border-bottom:0.5px solid #F0F0F0; }
+.session-tabs::-webkit-scrollbar { display:none; }
+.session-tab { flex-shrink:0; padding:10px 16px; font-size:12px; color:#999; cursor:pointer; white-space:nowrap; position:relative; text-align:center; }
+.session-tab.active { color:#E93323; font-weight:600; }
+.session-tab.active::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:40px; height:2px; background:#E93323; border-radius:2px; }
+
+/* 滚动内容 */
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+
+/* 商品列表 */
+.goods-list { padding:10px 14px; display:flex; flex-direction:column; gap:10px; }
+.goods-card { background:#fff; border-radius:10px; overflow:hidden; display:flex; align-items:stretch; cursor:pointer; }
+.goods-card:active { opacity:0.92; }
+.goods-thumb { width:110px; height:110px; flex-shrink:0; display:flex; align-items:center; justify-content:center; position:relative; }
+.goods-thumb-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.goods-icon { font-size:38px; }
+.goods-label { font-size:10px; color:rgba(255,255,255,0.9); font-weight:500; margin-top:4px; }
+.goods-badge { position:absolute; top:6px; left:6px; background:#E93323; color:#fff; font-size:9px; font-weight:600; padding:2px 6px; border-radius:8px; }
+.goods-body { flex:1; padding:10px 10px 10px 12px; display:flex; flex-direction:column; justify-content:space-between; }
+.goods-name { font-size:13px; color:#333; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.goods-bottom { display:flex; align-items:flex-end; justify-content:space-between; }
+.price-group { }
+.price-now { font-size:17px; font-weight:700; color:#E93323; }
+.price-now .unit { font-size:11px; }
+.price-orig { font-size:11px; color:#B0B0B0; text-decoration:line-through; }
+.progress-wrap { margin-top:4px; }
+.progress-bar-sm { height:4px; background:#F0F0F0; border-radius:2px; width:100px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#E93323,#FF6B35); border-radius:2px; }
+.progress-text { font-size:9px; color:#E93323; margin-top:2px; }
+.buy-btn-sm { background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; font-size:11px; font-weight:600; padding:6px 12px; border-radius:14px; white-space:nowrap; }
+
+/* Toast */
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+
+    <!-- 头部渐变区 -->
+    <div class="flash-hero">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#fff"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#fff"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#fff"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#fff"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#fff"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#fff"/><circle cx="7.5" cy="9" r="1.5" fill="#fff"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#fff"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#fff"/></svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back" onclick="goBack()">←</span>
+        <span class="nav-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:middle"><polygon points="13,1 8,12 3,13 10,18 7,24 13,20 18,24 16,18 22,13 16,12" fill="#FECF6A"/></svg> 限时秒杀</span>
+      </div>
+      <div class="hero-timer">
+        <span class="ht-label">距本场结束</span>
+        <span class="timer-num" id="h">02</span><span class="timer-colon">:</span>
+        <span class="timer-num" id="m">15</span><span class="timer-colon">:</span>
+        <span class="timer-num" id="s">30</span>
+      </div>
+    </div>
+
+    <!-- 场次切换 -->
+    <div class="session-tabs">
+      <div class="session-tab" onclick="switchSession(this)">10:00 场</div>
+      <div class="session-tab active" onclick="switchSession(this)">14:00 场<br><span style="font-size:9px;color:#E93323;">进行中</span></div>
+      <div class="session-tab" onclick="switchSession(this)">20:00 场</div>
+      <div class="session-tab" onclick="switchSession(this)">明日10:00</div>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="scroll-content">
+      <div class="goods-list">
+
+        <div class="goods-card" onclick="navigateTo('06-flash-sale.html')">
+          <div class="goods-thumb" style="background:linear-gradient(135deg,#E93323,#FF6B35);">
+            <div class="goods-thumb-inner"><span class="goods-icon"><svg viewBox="0 0 24 24"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg></span><span class="goods-label">消防冲刺课</span></div>
+            <div class="goods-badge">秒杀</div>
+          </div>
+          <div class="goods-body">
+            <div class="goods-name">一级消防工程师冲刺课程 全科精讲班</div>
+            <div class="goods-bottom">
+              <div class="price-group">
+                <div class="price-now"><span class="unit">¥</span>99.00</div>
+                <div class="price-orig">¥199.00</div>
+                <div class="progress-wrap">
+                  <div class="progress-bar-sm"><div class="progress-fill" style="width:65%;"></div></div>
+                  <div class="progress-text">已抢 65%，剩 35 件</div>
+                </div>
+              </div>
+              <div class="buy-btn-sm">立即抢购</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="goods-card" onclick="navigateTo('06-flash-sale.html')">
+          <div class="goods-thumb" style="background:linear-gradient(135deg,#2563EB,#1D4ED8);">
+            <div class="goods-thumb-inner"><span class="goods-icon"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="14" rx="2" fill="#B8C5FF"/><polygon points="4,8 12,1 20,8" fill="#FFD6A5"/></svg></span><span class="goods-label">建造师速成</span></div>
+            <div class="goods-badge">秒杀</div>
+          </div>
+          <div class="goods-body">
+            <div class="goods-name">二级建造师速成冲刺班 考前押题</div>
+            <div class="goods-bottom">
+              <div class="price-group">
+                <div class="price-now"><span class="unit">¥</span>69.00</div>
+                <div class="price-orig">¥159.00</div>
+                <div class="progress-wrap">
+                  <div class="progress-bar-sm"><div class="progress-fill" style="width:42%;"></div></div>
+                  <div class="progress-text">已抢 42%，剩 58 件</div>
+                </div>
+              </div>
+              <div class="buy-btn-sm">立即抢购</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="goods-card" onclick="navigateTo('06-flash-sale.html')">
+          <div class="goods-thumb" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);">
+            <div class="goods-thumb-inner"><span class="goods-icon"><svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="10" rx="1" fill="#FF9A9E"/><rect x="10" y="6" width="4" height="16" rx="1" fill="#A1E8CC"/><rect x="17" y="2" width="4" height="20" rx="1" fill="#FFD6A5"/></svg></span><span class="goods-label">会计冲刺班</span></div>
+            <div class="goods-badge">秒杀</div>
+          </div>
+          <div class="goods-body">
+            <div class="goods-name">初级会计职称冲刺精品班 2026版</div>
+            <div class="goods-bottom">
+              <div class="price-group">
+                <div class="price-now"><span class="unit">¥</span>49.00</div>
+                <div class="price-orig">¥129.00</div>
+                <div class="progress-wrap">
+                  <div class="progress-bar-sm"><div class="progress-fill" style="width:88%;"></div></div>
+                  <div class="progress-text">已抢 88%，仅剩 12 件</div>
+                </div>
+              </div>
+              <div class="buy-btn-sm">立即抢购</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="goods-card" onclick="navigateTo('06-flash-sale.html')">
+          <div class="goods-thumb" style="background:linear-gradient(135deg,#059669,#047857);">
+            <div class="goods-thumb-inner"><span class="goods-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/></svg></span><span class="goods-label">考研英语</span></div>
+            <div class="goods-badge">秒杀</div>
+          </div>
+          <div class="goods-body">
+            <div class="goods-name">考研英语精读全程提升班 阅读+写作</div>
+            <div class="goods-bottom">
+              <div class="price-group">
+                <div class="price-now"><span class="unit">¥</span>39.00</div>
+                <div class="price-orig">¥99.00</div>
+                <div class="progress-wrap">
+                  <div class="progress-bar-sm"><div class="progress-fill" style="width:30%;"></div></div>
+                  <div class="progress-text">已抢 30%，剩 70 件</div>
+                </div>
+              </div>
+              <div class="buy-btn-sm">立即抢购</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="goods-card" onclick="navigateTo('06-flash-sale.html')">
+          <div class="goods-thumb" style="background:linear-gradient(135deg,#D97706,#B45309);">
+            <div class="goods-thumb-inner"><span class="goods-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="6" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/><polygon points="9,6 15,6 12,3" fill="#FF6B35"/><path d="M3 12L6 6h12l3 6" fill="none" stroke="#B8C5FF" stroke-width="2"/></svg></span><span class="goods-label">法律从业</span></div>
+            <div class="goods-badge">秒杀</div>
+          </div>
+          <div class="goods-body">
+            <div class="goods-name">法律职业资格考试冲刺班 主观题专训</div>
+            <div class="goods-bottom">
+              <div class="price-group">
+                <div class="price-now"><span class="unit">¥</span>129.00</div>
+                <div class="price-orig">¥299.00</div>
+                <div class="progress-wrap">
+                  <div class="progress-bar-sm"><div class="progress-fill" style="width:55%;"></div></div>
+                  <div class="progress-text">已抢 55%，剩 45 件</div>
+                </div>
+              </div>
+              <div class="buy-btn-sm">立即抢购</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <div class="home-indicator"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="01-home.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1500);}
+
+function switchSession(el){
+  document.querySelectorAll('.session-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+// 倒计时
+var totalSec = 2*3600 + 15*60 + 30;
+function tick(){
+  totalSec--;
+  if(totalSec < 0) totalSec = 0;
+  var h = Math.floor(totalSec/3600);
+  var m = Math.floor((totalSec%3600)/60);
+  var s = totalSec%60;
+  document.getElementById('h').textContent = ('0'+h).slice(-2);
+  document.getElementById('m').textContent = ('0'+m).slice(-2);
+  document.getElementById('s').textContent = ('0'+s).slice(-2);
+}
+setInterval(tick, 1000);
+</script>
+</body>
+</html>

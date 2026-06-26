@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推广员中心 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.nav-bar { background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; padding:10px 14px; font-size:15px; font-weight:600; display:flex; align-items:center; gap:10px; flex-shrink:0; min-height:44px; }
+.nav-back { cursor:pointer; color:#fff; text-decoration:none; }
+.profile-card { background:linear-gradient(135deg,#E93323,#FF6B35); padding:0 16px 20px; color:#fff; }
+.profile-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.avatar { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.profile-name { font-size:14px; font-weight:600; }
+.profile-level { font-size:11px; opacity:0.8; }
+.profile-level .badge { display:inline-block; background:rgba(255,215,0,0.3); padding:1px 8px; border-radius:8px; color:#FFD700; }
+.commission-board { display:flex; background:rgba(255,255,255,0.15); border-radius:10px; padding:14px 8px; backdrop-filter:blur(4px); }
+.comm-item { flex:1; text-align:center; border-right:0.5px solid rgba(255,255,255,0.2); }
+.comm-item:last-child { border-right:none; }
+.comm-amount { font-size:18px; font-weight:700; }
+.comm-label { font-size:10px; opacity:0.8; margin-top:4px; }
+.section { background:#fff; margin-top:8px; }
+.withdraw-row { padding:14px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+.withdraw-row:active { background:#FAFAFA; }
+.withdraw-label { font-size:14px; font-weight:600; color:#E93323; }
+.withdraw-amount { font-size:12px; color:#E93323; font-weight:600; }
+.menu-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:0.5px solid #F5F5F5; cursor:pointer; transition:background .15s; }
+.menu-item:active { background:#FAFAFA; }
+.menu-item:last-child { border-bottom:none; }
+.menu-icon { margin-right:8px; font-size:16px; }
+.menu-label { font-size:13px; color:#333; }
+.menu-value { font-size:12px; color:#B0B0B0; }
+.earnings-section { background:#fff; margin-top:8px; padding:14px 16px; }
+.earnings-title { font-size:14px; font-weight:600; color:#333; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.earnings-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:0.5px solid #F5F5F5; font-size:11px; align-items:center; }
+.earnings-item:last-child { border-bottom:none; }
+.earnings-desc { color:#666; display:flex; align-items:center; gap:4px; }
+.earnings-tag { background:#E8F5E9; color:#2E7D32; font-size:9px; padding:1px 6px; border-radius:4px; }
+.earnings-amount { color:#E93323; font-weight:600; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 推广员中心</div>
+    <div class="scroll-content">
+      <div class="profile-card">
+        <div class="profile-row"><div class="avatar"><svg viewBox="0 0 24 24"><polygon points="12,1 15,8 22,9 17,14 18,22 12,18 6,22 7,14 2,9 9,8" fill="#FECF6A"/><circle cx="12" cy="12" r="3" fill="#FF6B35"/></svg></div><div><div class="profile-name">张推广</div><div class="profile-level"><span class="badge">黄金推广员</span> · 上级：李经理</div></div></div>
+        <div class="commission-board">
+          <div class="comm-item"><div class="comm-amount">¥1,280</div><div class="comm-label">可提现佣金</div></div>
+          <div class="comm-item"><div class="comm-amount">¥5,680</div><div class="comm-label">累计佣金</div></div>
+          <div class="comm-item"><div class="comm-amount">¥320</div><div class="comm-label">待解冻</div></div>
+        </div>
+      </div>
+      <div class="section"><div class="withdraw-row" onclick="showToast('跳转提现页面')"><span class="withdraw-label"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><circle cx="12" cy="12" r="10" fill="#FECF6A"/><text x="12" y="16" font-size="10" fill="#333" font-weight="bold" text-anchor="middle">¥</text></svg> 佣金提现</span><span class="withdraw-amount">可提现 ¥1,280.00 ›</span></div></div>
+      <div class="section" style="margin-top:8px;">
+        <div class="menu-item" onclick="showToast('推广团队详情')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3" fill="#FFB5A7"/><circle cx="17" cy="7" r="3" fill="#FFB5A7"/><ellipse cx="13" cy="20" rx="9" ry="5" fill="#B8C5FF"/></svg></span>推广团队</span><span class="menu-value">一级12人 | 二级8人 ›</span></div>
+        <div class="menu-item" onclick="showToast('生成推广海报')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="3" fill="#FFD6A5"/><circle cx="10" cy="10" r="3" fill="#FECF6A"/><polygon points="5,21 10,14 14,18 20,8 22,12 22,21" fill="#A1E8CC" opacity=".5"/></svg></span>推广海报</span><span class="menu-value">保存至相册 ›</span></div>
+        <div class="menu-item" onclick="showToast('收益明细')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="2" y="16" width="5" height="6" rx="1" fill="#FF6B35"/><rect x="9.5" y="12" width="5" height="10" rx="1" fill="#FECF6A"/><rect x="17" y="6" width="5" height="16" rx="1" fill="#A1E8CC"/></svg></span>收益明细</span><span class="menu-value">查看全部 ›</span></div>
+        <div class="menu-item" onclick="showToast('提现记录')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><rect x="7" y="5" width="10" height="2" rx="1" fill="#E93323" opacity=".3"/><rect x="7" y="9" width="12" height="2" rx="1" fill="#E93323" opacity=".3"/><rect x="7" y="13" width="9" height="2" rx="1" fill="#E93323" opacity=".3"/></svg></span>提现记录</span><span class="menu-value">3笔记录 ›</span></div>
+      </div>
+      <div class="earnings-section">
+        <div class="earnings-title"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><polyline points="2,18 8,12 12,15 18,6 22,10" stroke="#FF6B35" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="22" cy="10" r="2" fill="#FF6B35"/></svg> 近期收益</div>
+        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>一级消防工程师</span><span class="earnings-amount">+¥199.00</span></div>
+        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>二级建造师全科</span><span class="earnings-amount">+¥88.00</span></div>
+        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>初级会计职称</span><span class="earnings-amount">+¥56.00</span></div>
+        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">下级</span>邀请推广员奖励</span><span class="earnings-amount">+¥30.00</span></div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+</script>
+</body>
+</html>

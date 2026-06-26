@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>下单确认 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow-x:hidden; overflow-y:auto; display:flex; flex-direction:column; pointer-events:auto; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.status-time { font-weight:600; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; position:relative; z-index:1; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.addr-card { background:#fff; padding:14px; margin:8px 12px 0; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:10px; }
+.addr-card:active { background:#FAFAFA; }
+.addr-icon { font-size:22px; }
+.addr-info { flex:1; }
+.addr-user { font-size:13px; font-weight:500; color:#333; }
+.addr-phone { font-size:12px; color:#666; margin-left:10px; }
+.addr-detail { font-size:12px; color:#999; margin-top:4px; line-height:1.4; }
+.addr-arrow { color:#C0C0C0; }
+.course-section { background:#fff; margin:8px 12px 0; border-radius:10px; overflow:hidden; }
+.course-row { display:flex; align-items:center; gap:10px; padding:12px; }
+.course-img { width:72px; height:72px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.course-img-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.course-img-icon { font-size:28px; opacity:0.85; }
+.course-img-tag { font-size:8px; color:rgba(255,255,255,0.9); }
+.course-info { flex:1; }
+.course-name { font-size:13px; color:#333; line-height:1.4; }
+.course-price { font-size:13px; color:#999; margin-top:4px; }
+.price-row { display:flex; justify-content:space-between; padding:8px 12px; border-top:0.5px solid #F5F5F5; font-size:12px; color:#666; }
+.price-row.total { color:#333; font-weight:600; font-size:13px; }
+.price-amount { color:#E93323; font-size:16px; font-weight:700; }
+.coupon-bar { background:#fff; margin:8px 12px 0; border-radius:10px; padding:14px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+.coupon-label { font-size:13px; color:#333; }
+.coupon-value { font-size:12px; color:#E93323; }
+.phone-input { background:#fff; margin:8px 12px 0; border-radius:10px; padding:14px; position:relative; z-index:10; }
+.phone-label { font-size:13px; color:#333; margin-bottom:10px; display:block; }
+.phone-field { display:block; background:#F5F5F5; border-radius:8px; }
+.phone-field input { display:block; width:100%; border:none; background:transparent; outline:none; font-size:15px; color:#333; padding:12px 14px; -webkit-appearance:none; -webkit-user-select:text; user-select:text; pointer-events:auto; border-radius:8px; }
+.phone-field input::placeholder { color:#B0B0B0; font-size:11px; }
+.phone-field input:focus { background:#FFF8F0; }
+.bottom-bar { background:#fff; padding:10px 14px 20px; display:flex; gap:10px; align-items:center; border-top:0.5px solid #F0F0F0; flex-shrink:0; }
+.total-text { font-size:11px; color:#999; }
+.total-price { font-size:20px; font-weight:700; color:#E93323; }
+.submit-btn { flex:1; background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; text-align:center; padding:12px; border-radius:22px; font-size:14px; font-weight:600; cursor:pointer; }
+.submit-btn:active { opacity:0.8; }
+.coupon-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45); z-index:50; display:none; align-items:flex-end; }
+.coupon-overlay.show { display:flex; }
+.coupon-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; max-height:420px; overflow-y:auto; animation:slideUp 0.25s ease; }
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.coupon-sheet-title { padding:16px 16px 10px; font-size:15px; font-weight:600; color:#333; text-align:center; border-bottom:0.5px solid #F0F0F0; position:relative; }
+.coupon-sheet-close { position:absolute; right:16px; top:14px; font-size:18px; color:#999; cursor:pointer; }
+.coupon-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:0.5px solid #F5F5F5; cursor:pointer; }
+.coupon-item:active { background:#FAFAFA; }
+.coupon-item.selected { background:#FFF8F5; }
+.coupon-item-body { flex:1; }
+.coupon-item-amount { font-size:18px; font-weight:700; color:#E93323; }
+.coupon-item-amount span { font-size:12px; }
+.coupon-item-desc { font-size:12px; color:#666; margin-top:2px; }
+.coupon-item-expire { font-size:10px; color:#B0B0B0; margin-top:2px; }
+.coupon-item-radio { width:20px; height:20px; border-radius:50%; border:2px solid #D0D0D0; flex-shrink:0; position:relative; }
+.coupon-item.selected .coupon-item-radio { border-color:#E93323; }
+.coupon-item.selected .coupon-item-radio::after { content:''; position:absolute; top:3px; left:3px; width:10px; height:10px; border-radius:50%; background:#E93323; }
+.coupon-no-use { padding:14px 16px; text-align:center; cursor:pointer; font-size:13px; color:#999; border-bottom:0.5px solid #F5F5F5; }
+.coupon-no-use:active { background:#FAFAFA; }
+.coupon-no-use.selected { color:#E93323; font-weight:600; background:#FFF8F5; }
+.coupon-confirm { margin:12px 16px 20px; background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; text-align:center; padding:12px; border-radius:22px; font-size:14px; font-weight:600; cursor:pointer; }
+.coupon-confirm:active { opacity:0.8; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 确认订单</div>
+    <div class="scroll-content">
+      <div class="addr-card" onclick="navigateTo('14-address.html')">
+        <span class="addr-icon"><svg viewBox="0 0 24 24" style="width:22px;height:22px"><ellipse cx="12" cy="20" rx="8" ry="3" fill="#A1E8CC" opacity=".5"/><path d="M12 2C8.7 2 6 4.7 6 8c0 3.5 6 12 6 12s6-8.5 6-12c0-3.3-2.7-6-6-6z" fill="#FF6B35"/><circle cx="12" cy="8" r="3" fill="#fff"/></svg></span>
+        <div class="addr-info"><span class="addr-user">张同学</span><span class="addr-phone">138****8888</span><div class="addr-detail">广东省深圳市南山区科技园路1号创新大厦A座1208</div></div>
+        <span class="addr-arrow">›</span>
+      </div>
+      <div class="course-section">
+        <div class="course-row">
+          <div class="course-img" style="background:linear-gradient(135deg,#DC2626,#991B1B);"><div class="course-img-inner"><span class="course-img-icon"><svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg></span><span class="course-img-tag">消防</span></div></div>
+          <div class="course-info"><div class="course-name">一级消防工程师全科取证班</div><div class="course-price">×1</div></div>
+        </div>
+        <div class="price-row"><span>商品金额</span><span>¥2999.00</span></div>
+        <div class="price-row"><span>优惠券</span><span style="color:#E93323;">-¥200.00</span></div>
+        <div class="price-row total"><span>实付金额</span><span class="price-amount">¥2799.00</span></div>
+      </div>
+      <div class="coupon-bar" onclick="openCoupon()"><span class="coupon-label"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><rect x="2" y="6" width="20" height="12" rx="3" fill="#FF9A9E"/><circle cx="6" cy="12" r="3" fill="#fff" opacity=".7"/><circle cx="18" cy="12" r="3" fill="#fff" opacity=".7"/><rect x="10" y="9" width="8" height="6" rx="1" fill="#fff" opacity=".5"/></svg> 优惠券</span><span class="coupon-value" id="couponText">满2999减200 可用 ›</span></div>
+      <div class="phone-input"><div class="phone-label"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><rect x="6" y="1" width="12" height="22" rx="3" fill="#B8C5FF"/><rect x="9" y="3" width="6" height="16" rx="1" fill="#fff" opacity=".5"/><circle cx="12" cy="21" r="1" fill="#fff" opacity=".5"/></svg> 听课手机号 <span style="font-size:9px;color:#B0B0B0;font-weight:400;">（选填）</span></div><div class="phone-field"><input type="tel" placeholder="选填，用于接收上课通知"></div></div>
+    </div>
+    <!-- 优惠券选择弹窗 -->
+    <div class="coupon-overlay" id="couponOverlay" onclick="closeCoupon(event)">
+      <div class="coupon-sheet" onclick="event.stopPropagation()">
+        <div class="coupon-sheet-title">选择优惠券 <span class="coupon-sheet-close" onclick="closeCoupon()">✕</span></div>
+        <div class="coupon-no-use" id="couponNone" onclick="selectCoupon(-1)">不使用优惠券</div>
+        <div class="coupon-item" id="coupon0" onclick="selectCoupon(0)">
+          <div class="coupon-item-body"><div class="coupon-item-amount"><span>¥</span>200</div><div class="coupon-item-desc">满2999元可用</div><div class="coupon-item-expire">有效期至 2026-07-31</div></div>
+          <div class="coupon-item-radio"></div>
+        </div>
+        <div class="coupon-item" id="coupon1" onclick="selectCoupon(1)">
+          <div class="coupon-item-body"><div class="coupon-item-amount"><span>¥</span>100</div><div class="coupon-item-desc">满1999元可用</div><div class="coupon-item-expire">有效期至 2026-08-15</div></div>
+          <div class="coupon-item-radio"></div>
+        </div>
+        <div class="coupon-item" id="coupon2" onclick="selectCoupon(2)">
+          <div class="coupon-item-body"><div class="coupon-item-amount"><span>¥</span>50</div><div class="coupon-item-desc">无门槛使用</div><div class="coupon-item-expire">有效期至 2026-06-30</div></div>
+          <div class="coupon-item-radio"></div>
+        </div>
+        <div class="coupon-item disabled" id="coupon3" style="opacity:0.4;cursor:not-allowed;">
+          <div class="coupon-item-body"><div class="coupon-item-amount"><span>¥</span>500</div><div class="coupon-item-desc">满4999元可用</div><div class="coupon-item-expire">有效期至 2026-12-31</div></div>
+          <div style="font-size:10px;color:#B0B0B0;">不满足</div>
+        </div>
+        <div class="coupon-confirm" onclick="applyCoupon()">确定</div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div><div class="total-text">实付</div><div class="total-price">¥2799.00</div></div>
+      <div class="submit-btn" onclick="submitOrder()">提交订单</div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+
+// 优惠券数据
+var coupons = [
+  { amount:200, min:2999, desc:'满2999元可用', expire:'2026-07-31' },
+  { amount:100, min:1999, desc:'满1999元可用', expire:'2026-08-15' },
+  { amount:50,  min:0,    desc:'无门槛使用',   expire:'2026-06-30' }
+];
+var selectedIdx = 0; // 默认选中第0张（满2999减200）
+var basePrice = 2999;
+
+function openCoupon() {
+  document.getElementById('couponOverlay').classList.add('show');
+  updateCouponSelection();
+}
+
+function closeCoupon(e) {
+  if (e && e.target !== document.getElementById('couponOverlay')) return;
+  document.getElementById('couponOverlay').classList.remove('show');
+  // 恢复为已应用的选择
+  updateCouponSelection();
+}
+
+function selectCoupon(idx) {
+  selectedIdx = idx;
+  updateCouponSelection();
+}
+
+function updateCouponSelection() {
+  // 清除所有选中状态
+  document.querySelectorAll('.coupon-item').forEach(function(el){ el.classList.remove('selected'); });
+  document.getElementById('couponNone').classList.remove('selected');
+  // 设置选中
+  if (selectedIdx === -1) {
+    document.getElementById('couponNone').classList.add('selected');
+  } else {
+    var el = document.getElementById('coupon' + selectedIdx);
+    if (el) el.classList.add('selected');
+  }
+}
+
+function applyCoupon() {
+  var discount = 0;
+  var text = '不使用优惠券 ›';
+  if (selectedIdx >= 0) {
+    discount = coupons[selectedIdx].amount;
+    text = '满' + coupons[selectedIdx].min + '减' + coupons[selectedIdx].amount + ' 已选 ›';
+  }
+  // 更新价格
+  var finalPrice = basePrice - discount;
+  document.querySelectorAll('.price-amount').forEach(function(el){ el.textContent = '¥' + finalPrice.toFixed(2); });
+  document.querySelectorAll('.total-price').forEach(function(el){ el.textContent = '¥' + finalPrice.toFixed(2); });
+  document.getElementById('couponText').textContent = text;
+  // 更新优惠行
+  var couponRow = document.querySelectorAll('.price-row')[1];
+  if (couponRow) {
+    couponRow.querySelector('span:last-child').textContent = discount > 0 ? '-¥' + discount + '.00' : '未使用';
+  }
+  document.getElementById('couponOverlay').classList.remove('show');
+}
+
+function submitOrder() {
+  var phoneInput = document.querySelector('.phone-field input');
+  var phone = phoneInput.value.trim();
+  var discount = 0;
+  if (selectedIdx >= 0) discount = coupons[selectedIdx].amount;
+  var finalPrice = basePrice - discount;
+  var payData = { amount: finalPrice, phone: phone, orderId: 'JD' + Date.now() };
+  try { localStorage.setItem('jd_pay_order', JSON.stringify(payData)); } catch(e) {}
+  navigateTo('22-payment.html');
+}
+</script>
+</body>
+</html>

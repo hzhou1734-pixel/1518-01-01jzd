@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>确认支付 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+
+/* 支付金额头部 */
+.pay-header { background:#fff; padding:28px 14px 20px; text-align:center; }
+.pay-label { font-size:13px; color:#999; }
+.pay-amount { font-size:36px; font-weight:700; color:#E93323; margin:8px 0 4px; }
+.pay-countdown { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:#999; background:#FFF5F5; padding:4px 12px; border-radius:12px; margin-top:6px; }
+.pay-countdown .cd-num { color:#E93323; font-weight:600; }
+.pay-countdown.warn { background:#FFF0F0; animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+/* 订单信息 */
+.order-card { background:#fff; margin:8px; border-radius:10px; padding:14px; }
+.order-row { display:flex; align-items:center; gap:10px; }
+.order-img { width:56px; height:56px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.order-name { font-size:13px; color:#333; line-height:1.4; flex:1; }
+.order-meta { display:flex; justify-content:space-between; padding:8px 0 0; margin-top:8px; border-top:0.5px solid #F5F5F5; font-size:12px; color:#666; }
+.order-meta .val { color:#333; font-weight:500; }
+
+/* 支付方式 */
+.pay-method-section { background:#fff; margin:8px; border-radius:10px; overflow:hidden; }
+.pay-method-title { padding:14px 14px 8px; font-size:13px; font-weight:600; color:#333; }
+.pay-method-card { display:flex; align-items:center; gap:10px; padding:14px; cursor:pointer; position:relative; border:2px solid transparent; margin:0 8px 12px; border-radius:8px; }
+.pay-method-card.active { border-color:#07C160; background:#F0FFF4; }
+.pay-method-icon { width:36px; height:36px; border-radius:50%; background:#07C160; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.pay-method-name { flex:1; font-size:14px; color:#333; font-weight:500; }
+.pay-method-check { width:20px; height:20px; border-radius:50%; border:2px solid #D0D0D0; position:relative; flex-shrink:0; }
+.pay-method-card.active .pay-method-check { border-color:#07C160; background:#07C160; }
+.pay-method-card.active .pay-method-check::after { content:''; position:absolute; top:3px; left:6px; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
+
+/* 底部确认 */
+.bottom-bar { background:#fff; padding:10px 14px 20px; display:flex; gap:10px; align-items:center; border-top:0.5px solid #F0F0F0; flex-shrink:0; }
+.pay-btn { flex:1; background:linear-gradient(135deg,#07C160,#06AD56); color:#fff; text-align:center; padding:13px; border-radius:22px; font-size:15px; font-weight:600; cursor:pointer; }
+.pay-btn:active { opacity:0.8; }
+.pay-btn.paid { opacity:0.5; pointer-events:none; }
+
+/* Toast */
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+
+/* 支付成功弹窗 */
+.pay-success-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.55); z-index:80; display:none; align-items:center; justify-content:center; }
+.pay-success-overlay.show { display:flex; }
+.pay-success-card { background:#fff; border-radius:16px; width:280px; text-align:center; padding:32px 20px 24px; animation:popIn .3s ease; }
+@keyframes popIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+.success-icon { width:64px; height:64px; border-radius:50%; background:#07C160; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; }
+.success-icon svg { width:32px; height:32px; }
+.success-title { font-size:17px; font-weight:600; color:#333; margin-bottom:4px; }
+.success-amount { font-size:24px; font-weight:700; color:#E93323; margin-bottom:20px; }
+.success-btn { display:block; width:100%; background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; padding:12px; border-radius:22px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; }
+.success-btn:active { opacity:0.8; }
+.success-btn.ghost { background:#F5F5F5; color:#666; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 确认支付</div>
+    <div class="scroll-content">
+      <!-- 支付金额 -->
+      <div class="pay-header">
+        <div class="pay-label">支付金额</div>
+        <div class="pay-amount" id="payAmount">¥2,799.00</div>
+        <div class="pay-countdown" id="countdown">请在 <span class="cd-num">15:00</span> 内完成支付</div>
+      </div>
+
+      <!-- 订单信息 -->
+      <div class="order-card">
+        <div class="order-row">
+          <div class="order-img" style="background:linear-gradient(135deg,#DC2626,#991B1B);"><div style="display:flex;flex-direction:column;align-items:center;"><svg viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg><span style="font-size:7px;color:rgba(255,255,255,0.8);">消防</span></div></div>
+          <div class="order-name">一级消防工程师全科取证班</div>
+        </div>
+        <div class="order-meta">
+          <span>订单编号</span><span class="val">JD2026062610001</span>
+        </div>
+        <div class="order-meta" style="border-top:none;padding-top:4px;">
+          <span>下单时间</span><span class="val">2026-06-26 11:22</span>
+        </div>
+      </div>
+
+      <!-- 支付方式 -->
+      <div class="pay-method-section">
+        <div class="pay-method-title">选择支付方式</div>
+        <div class="pay-method-card active" id="wechatPay">
+          <div class="pay-method-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8.7 2.5C8.7 2.5 9.5 3 9.5 4c0 1.5-1 2.5-1 2.5s-1.5-.5-1.5-2S8.7 2.5 8.7 2.5z" fill="#fff"/><path d="M8 2C4.7 2 2 4.3 2 7.2c0 1.6.8 3 2 4 0 0-.3 1.5-1 2.5 0 0 2-.5 3.5-2 1.2.5 2.5.8 3.8.8.3 0 .5 0 .8-.1-1.3-.7-2.1-2-2.1-3.4 0-2.2 1.9-4 4.3-4 .5 0 1 .1 1.5.3C14.1 3.3 11.3 2 8 2z" fill="#fff"/><path d="M10.8 7.5c-.4 0-.7.3-.7.7s.3.7.7.7.7-.3.7-.7-.3-.7-.7-.7z" fill="#07C160"/><path d="M5.8 7.5c-.4 0-.7.3-.7.7s.3.7.7.7.7-.3.7-.7-.3-.7-.7-.7z" fill="#07C160"/><path d="M13.5 9.3c-3 0-5.5 2.2-5.5 4.8s2.5 4.8 5.5 4.8c1 0 2-.3 2.8-.8 1.2.8 2.7 1.5 2.7 1.5-.3-.8-.5-1.6-.3-2 .8-.8 1.3-1.8 1.3-2.8 0-2.6-2.5-4.8-5.5-4.8z" fill="#fff"/><circle cx="12" cy="14" r="0.9" fill="#07C160"/><circle cx="16" cy="14" r="0.9" fill="#07C160"/></svg>
+          </div>
+          <span class="pay-method-name">微信支付</span>
+          <span style="font-size:11px;color:#999;">推荐使用</span>
+          <div class="pay-method-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部支付按钮 -->
+    <div class="bottom-bar">
+      <div class="pay-btn" id="payBtn" onclick="handlePay()">立即支付</div>
+    </div>
+
+    <!-- 支付成功弹窗 -->
+    <div class="pay-success-overlay" id="successOverlay">
+      <div class="pay-success-card">
+        <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div>
+        <div class="success-title">支付成功</div>
+        <div class="success-amount" id="successAmount">¥2,799.00</div>
+        <div class="success-btn" onclick="goOrders()">查看订单</div>
+        <div class="success-btn ghost" onclick="goHome()">返回首页</div>
+      </div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// 订单数据
+var amount = 2799.00;
+var totalSeconds = 900; // 15分钟 = 900秒
+var timerInterval;
+
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="07-order-confirm.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+
+// 读取 localStorage 中传递的金额
+(function(){
+  try {
+    var payData = JSON.parse(localStorage.getItem("jd_pay_order")||"null");
+    if (payData && payData.amount) {
+      amount = payData.amount;
+      document.getElementById('payAmount').textContent = '¥' + amount.toLocaleString('zh-CN',{minimumFractionDigits:2});
+    }
+  } catch(e) {}
+})();
+
+// 倒计时
+function startCountdown() {
+  totalSeconds = 900;
+  var cdEl = document.getElementById('countdown');
+  var timerEl = cdEl.querySelector('.cd-num');
+  timerInterval = setInterval(function(){
+    totalSeconds--;
+    if (totalSeconds <= 0) {
+      clearInterval(timerInterval);
+      cdEl.textContent = '订单已超时，请重新下单';
+      cdEl.classList.add('warn');
+      document.getElementById('payBtn').textContent = '订单已过期';
+      document.getElementById('payBtn').classList.add('paid');
+      return;
+    }
+    var m = Math.floor(totalSeconds / 60);
+    var s = totalSeconds % 60;
+    timerEl.textContent = (m<10?'0':'') + m + ':' + (s<10?'0':'') + s;
+    if (totalSeconds <= 60) cdEl.classList.add('warn');
+  }, 1000);
+}
+startCountdown();
+
+// 支付处理
+function handlePay() {
+  var btn = document.getElementById('payBtn');
+  if (btn.classList.contains('paid')) return;
+  btn.textContent = '支付中...';
+  btn.classList.add('paid');
+  // 模拟支付过程（1.5秒后成功）
+  setTimeout(function(){
+    document.getElementById('successAmount').textContent = '¥' + amount.toLocaleString('zh-CN',{minimumFractionDigits:2});
+    document.getElementById('successOverlay').classList.add('show');
+    clearInterval(timerInterval);
+  }, 1800);
+}
+
+function goOrders() { navigateTo('03-order-list.html'); }
+function goHome() { navigateTo('01-home.html'); }
+</script>
+</body>
+</html>

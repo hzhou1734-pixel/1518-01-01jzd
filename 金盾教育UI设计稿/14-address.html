@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>收货地址 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:#fff;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:#fff;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:0.5px solid #EEE}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none;user-select:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px}
+.scroll-content::-webkit-scrollbar{width:0}
+.addr-card{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;border:0.5px solid #F0F0F0;position:relative;transition:transform .15s}
+.addr-card.default{border-color:#E93323;border-width:1px}
+.addr-top{display:flex;align-items:flex-start;margin-bottom:4px}
+.addr-user{font-size:14px;font-weight:600;color:#333}
+.addr-phone{font-size:13px;color:#666;margin-left:12px}
+.addr-tag{display:inline-block;font-size:9px;background:#E93323;color:#fff;padding:1px 6px;border-radius:3px;margin-left:8px;vertical-align:middle}
+.addr-detail{font-size:12px;color:#666;line-height:1.6}
+.addr-actions{margin-top:10px;display:flex;gap:16px;justify-content:flex-end;font-size:12px}
+.addr-edit{color:#E93323;cursor:pointer;user-select:none}
+.addr-del{color:#999;cursor:pointer;user-select:none}
+.addr-edit:active,.addr-del:active{opacity:0.5}
+.empty-tip{text-align:center;color:#999;font-size:13px;padding:60px 0}
+.addr-add-btn{position:sticky;bottom:0;background:#F5F5F5;padding:12px 12px 12px}
+.addr-add-btn button{width:100%;background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;border:none;border-radius:22px;padding:12px;font-size:14px;font-weight:500;cursor:pointer}
+.addr-add-btn button:active{opacity:0.85}
+
+.confirm-mask{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:99;display:none;align-items:center;justify-content:center}
+.confirm-mask.show{display:flex}
+.confirm-box{width:280px;background:#fff;border-radius:14px;overflow:hidden;text-align:center}
+.confirm-msg{padding:28px 20px 16px;font-size:14px;color:#333;line-height:1.6}
+.confirm-btns{display:flex;border-top:0.5px solid #EEE}
+.confirm-btns div{flex:1;padding:14px;font-size:15px;cursor:pointer}
+.confirm-btns .cancel-btn{color:#999;border-right:0.5px solid #EEE}
+.confirm-btns .ok-btn{color:#E93323;font-weight:600}
+.confirm-btns .cancel-btn:active,.confirm-btns .ok-btn:active{background:#F5F5F5}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">收货地址</span></div>
+    <div class="scroll-content" id="addrList"></div>
+    <div class="addr-add-btn"><button onclick="navigateTo('20-address-form.html?mode=add')">＋ 新增收货地址</button></div>
+  </div>
+  <div class="home-indicator"></div>
+
+  <!-- 删除确认弹窗 -->
+  <div class="confirm-mask" id="confirmMask">
+    <div class="confirm-box">
+      <div class="confirm-msg">确定要删除该收货地址吗？<br><span style="font-size:11px;color:#999">删除后不可恢复</span></div>
+      <div class="confirm-btns"><div class="cancel-btn" onclick="hideConfirm()">取消</div><div class="ok-btn" onclick="confirmDel()">确定删除</div></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var addresses = [];
+var deletingId = null;
+
+// 默认数据
+var defaultAddrs = [
+  {id:1,name:'张同学',phone:'138****5678',region:'广东省 深圳市 南山区',detail:'科技园南路 金盾大厦A座1206室',isDefault:true},
+  {id:2,name:'张同学',phone:'139****1234',region:'广东省 广州市 天河区',detail:'体育西路 天河城广场3层301',isDefault:false},
+  {id:3,name:'李同学',phone:'185****9000',region:'北京市 海淀区',detail:'中关村大街 理想国际大厦15层',isDefault:false}
+];
+
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+
+// 从 localStorage 读取，如果没有则写入默认数据
+function loadAddresses(){
+  try{
+    var d=localStorage.getItem('jd_addresses');
+    if(d){
+      addresses=JSON.parse(d);
+    }else{
+      addresses=JSON.parse(JSON.stringify(defaultAddrs));
+      localStorage.setItem('jd_addresses',JSON.stringify(addresses));
+    }
+  }catch(e){
+    addresses=JSON.parse(JSON.stringify(defaultAddrs));
+  }
+  renderList();
+}
+
+function saveAddresses(){
+  try{localStorage.setItem('jd_addresses',JSON.stringify(addresses))}catch(e){}
+}
+
+// 删除
+function delAddr(id){
+  deletingId=id;
+  document.getElementById('confirmMask').classList.add('show');
+}
+
+function hideConfirm(){
+  deletingId=null;
+  document.getElementById('confirmMask').classList.remove('show');
+}
+
+function confirmDel(){
+  if(deletingId){
+    addresses=addresses.filter(function(a){return a.id!==deletingId});
+    saveAddresses();
+    showToast('已删除');
+  }
+  hideConfirm();
+  renderList();
+}
+
+function editAddr(id){
+  navigateTo('20-address-form.html?mode=edit&id='+id);
+}
+
+// 渲染列表
+function renderList(){
+  // 从 localStorage 重新读取（表单页可能已修改）
+  loadAddressesFromStorage();
+  var container=document.getElementById('addrList');
+  if(!addresses.length){
+    container.innerHTML='<div class="empty-tip">暂无收货地址</div>';
+    return;
+  }
+  var html='';
+  addresses.forEach(function(a){
+    html+='<div class="addr-card'+(a.isDefault?' default':'')+'">';
+    html+='<div class="addr-top"><span class="addr-user">'+a.name+'</span><span class="addr-phone">'+a.phone+'</span>';
+    if(a.isDefault) html+='<span class="addr-tag">默认</span>';
+    html+='</div>';
+    html+='<div class="addr-detail">'+a.region+' '+a.detail+'</div>';
+    html+='<div class="addr-actions"><span class="addr-edit" onclick="editAddr('+a.id+')">编辑</span><span class="addr-del" onclick="delAddr('+a.id+')">删除</span></div>';
+    html+='</div>';
+  });
+  container.innerHTML=html;
+}
+
+function loadAddressesFromStorage(){
+  try{
+    var d=localStorage.getItem('jd_addresses');
+    if(d) addresses=JSON.parse(d);
+  }catch(e){}
+}
+
+// 页面显示时重新渲染（从表单页返回后数据可能已变更）
+window.addEventListener('pageshow',function(){renderList()});
+
+// 初始化
+loadAddresses();
+</script>
+</body>
+</html>

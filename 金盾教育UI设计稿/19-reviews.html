@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全部评价 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0 14px 14px; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.count-bar { background:#fff; margin:8px 0; padding:14px; border-radius:10px; font-size:14px; font-weight:600; color:#333; text-align:center; }
+.filter-tabs { display:flex; gap:8px; padding:4px 0 8px; }
+.filter-tab { font-size:12px; padding:5px 14px; border-radius:16px; background:#fff; color:#666; cursor:pointer; border:0.5px solid #E8E8E8; }
+.filter-tab.active { background:#E93323; color:#fff; border-color:#E93323; }
+.review-card { background:#fff; padding:14px; border-radius:10px; margin-bottom:8px; }
+.review-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.review-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; flex-shrink:0; }
+.review-name { font-size:13px; color:#333; font-weight:500; }
+.review-stars { font-size:11px; color:#FF9500; margin-left:auto; }
+.review-date { font-size:10px; color:#B0B0B0; }
+.review-text { font-size:13px; color:#555; line-height:1.6; margin-bottom:6px; }
+.review-photos { display:flex; gap:6px; margin-top:6px; }
+.review-photo { width:60px; height:60px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.load-more { text-align:center; padding:16px 0; font-size:12px; color:#B0B0B0; cursor:pointer; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 全部评价</div>
+    <div class="scroll-content">
+
+      <!-- 评价总数 -->
+      <div class="count-bar" id="countBar">全部评价（128条）</div>
+
+      <!-- 筛选标签 -->
+      <div class="filter-tabs">
+        <div class="filter-tab active" data-filter="all" onclick="switchFilter('all',this)">全部</div>
+        <div class="filter-tab" data-filter="pic" onclick="switchFilter('pic',this)">有图</div>
+        <div class="filter-tab" data-filter="good" onclick="switchFilter('good',this)">好评</div>
+        <div class="filter-tab" data-filter="mid" onclick="switchFilter('mid',this)">中评</div>
+        <div class="filter-tab" data-filter="bad" onclick="switchFilter('bad',this)">差评</div>
+      </div>
+
+      <!-- 评价列表 -->
+      <div class="review-card" data-rating="good" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#FF9810,#FF6B35);">张</div><span class="review-name">张同学</span><span class="review-date">3天前</span><span class="review-stars">★★★★★</span></div>
+        <div class="review-text">老师讲得非常细致，重点考点都做了归纳整理，非常推荐！尤其是技术实务部分，知识点梳理特别清晰，跟着学完全不费劲。</div>
+      </div>
+
+      <div class="review-card" data-rating="good" data-has-photo="1">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#4FACFE,#00F2FE);">李</div><span class="review-name">李先生</span><span class="review-date">5天前</span><span class="review-stars">★★★★★</span></div>
+        <div class="review-text">课程内容全面，配套资料也很丰富，值得购买。直播互动很方便，课后还有答疑群，学习氛围很好。</div>
+        <div class="review-photos"><div class="review-photo" style="background:linear-gradient(135deg,#FFF5F5,#FFE0E0);"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><polygon points="17,5 20,8 14,14 11,14 11,11" fill="#FECF6A"/></svg></div><div class="review-photo" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB);"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/></svg></div></div>
+      </div>
+
+      <div class="review-card" data-rating="good" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#43E97B,#38F9D7);">王</div><span class="review-name">王女士</span><span class="review-date">1周前</span><span class="review-stars">★★★★☆</span></div>
+        <div class="review-text">整体不错，希望能增加更多真题讲解。案例分析的课时稍微少了点，建议再补充一些实战题型。</div>
+      </div>
+
+      <div class="review-card" data-rating="good" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c);">赵</div><span class="review-name">赵先生</span><span class="review-date">1周前</span><span class="review-stars">★★★★★</span></div>
+        <div class="review-text">已经通过了一级消防工程师，非常感谢这个课程！综合能力的老师讲得特别透彻，尤其是建筑防火检查那部分，之前一直搞混的条款现在终于理清了。</div>
+      </div>
+
+      <div class="review-card" data-rating="good" data-has-photo="1">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#fa709a,#fee140);">陈</div><span class="review-name">陈同学</span><span class="review-date">2周前</span><span class="review-stars">★★★★★</span></div>
+        <div class="review-text">二战终于过了，这次报了系统班效果确实不一样。之前自学总觉得差不离，结果差一分，这次老老实实跟课，一次过三科。</div>
+        <div class="review-photos"><div class="review-photo" style="background:linear-gradient(135deg,#FFF8E1,#FFECB3);"><svg viewBox="0 0 24 24"><polygon points="2,10 12,4 22,10 12,16" fill="#A1E8CC"/><rect x="14" y="10" width="4" height="8" rx="1" fill="#FF9A9E"/></svg></div></div>
+      </div>
+
+      <div class="review-card" data-rating="mid" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">刘</div><span class="review-name">刘先生</span><span class="review-date">3周前</span><span class="review-stars">★★★☆☆</span></div>
+        <div class="review-text">课程内容还行，但App偶尔会卡顿，希望优化一下播放体验。另外字幕有时候对不上，影响听课效率。</div>
+      </div>
+
+      <div class="review-card" data-rating="mid" data-has-photo="1">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#FFD26F,#f5af19);">黄</div><span class="review-name">黄女士</span><span class="review-date">3周前</span><span class="review-stars">★★★☆☆</span></div>
+        <div class="review-text">中规中矩吧，老师水平是可以的，但直播有时候比较啰嗦，干货密度不够高。配套习题还不错，刷完确实能提分。</div>
+        <div class="review-photos"><div class="review-photo" style="background:linear-gradient(135deg,#FFF8E1,#FFECB3);"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#B8C5FF"/><rect x="7" y="7" width="10" height="3" rx="0.5" fill="#fff" opacity=".4"/><rect x="7" y="12" width="8" height="3" rx="0.5" fill="#fff" opacity=".4"/></svg></div></div>
+      </div>
+
+      <div class="review-card" data-rating="bad" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#ccc,#999);">周</div><span class="review-name">周先生</span><span class="review-date">1周前</span><span class="review-stars">★★☆☆☆</span></div>
+        <div class="review-text">课程内容和宣传差太多，说好的配套资料到现在都没发全，客服也爱答不理的。价格不便宜，性价比不高。</div>
+      </div>
+
+      <div class="review-card" data-rating="bad" data-has-photo="0">
+        <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#bdc3c7,#8e9eab);">孙</div><span class="review-name">孙同学</span><span class="review-date">2周前</span><span class="review-stars">★☆☆☆☆</span></div>
+        <div class="review-text">退款流程太麻烦了，申请了一个星期还没处理。课程质量也一般，很多内容都是公开课里面讲过的，花冤枉钱了。</div>
+      </div>
+
+      <div class="load-more" onclick="showToast('没有更多评价了')">—— 已经到底了 ——</div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="05-course-detail.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+var countMap = {all:128, pic:43, good:89, mid:24, bad:15};
+function switchFilter(type,el){
+  document.querySelectorAll('.filter-tab').forEach(function(i){i.classList.remove('active')});
+  el.classList.add('active');
+  var cards = document.querySelectorAll('.review-card');
+  var visible = 0;
+  cards.forEach(function(card){
+    var rating = card.getAttribute('data-rating');
+    var hasPhoto = card.getAttribute('data-has-photo');
+    var show = false;
+    if(type==='all') show = true;
+    else if(type==='pic') show = (hasPhoto==='1');
+    else if(type==='good') show = (rating==='good');
+    else if(type==='mid') show = (rating==='mid');
+    else if(type==='bad') show = (rating==='bad');
+    card.style.display = show ? '' : 'none';
+    if(show) visible++;
+  });
+  var labels = {all:'全部评价', pic:'有图', good:'好评', mid:'中评', bad:'差评'};
+  document.getElementById('countBar').textContent = labels[type] + '（' + countMap[type] + '条）';
+}
+</script>
+</body>
+</html>

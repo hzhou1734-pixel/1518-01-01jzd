@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隐私政策 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:#fff;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:#fff;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:0.5px solid #EEE}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.scroll-content::-webkit-scrollbar{width:0}
+.privacy-update{font-size:11px;color:#999;text-align:center;margin-bottom:16px}
+.privacy-section{margin-bottom:16px}
+.privacy-section h3{font-size:14px;font-weight:600;color:#333;margin-bottom:8px;padding-left:8px;border-left:3px solid #E93323}
+.privacy-section p{font-size:12px;color:#555;line-height:1.8;text-indent:2em}
+.privacy-section ul{font-size:12px;color:#555;line-height:1.8;padding-left:2em;list-style:disc}
+.privacy-section li{margin-bottom:4px}
+.privacy-table{width:100%;border-collapse:collapse;font-size:11px;color:#555;margin:8px 0}
+.privacy-table th{background:#F8F8F8;padding:8px;text-align:left;font-weight:500;border:0.5px solid #EEE}
+.privacy-table td{padding:8px;border:0.5px solid #EEE}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">隐私政策</span></div>
+    <div class="scroll-content">
+      <div class="privacy-update">更新日期：2026年06月01日<br>生效日期：2026年06月01日</div>
+      <div class="privacy-section">
+        <h3>引言</h3>
+        <p>金盾教育科技有限公司（以下简称"我们"）深知个人信息对您的重要性，我们将按照法律法规的要求，采取相应的安全保护措施，尽力保护您的个人信息安全。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。</p>
+      </div>
+      <div class="privacy-section">
+        <h3>一、我们收集的信息</h3>
+        <table class="privacy-table">
+          <tr><th>信息类型</th><th>具体内容</th><th>收集目的</th></tr>
+          <tr><td>账号信息</td><td>手机号、微信昵称、头像</td><td>注册登录、身份识别</td></tr>
+          <tr><td>交易信息</td><td>订单记录、支付信息、收货地址</td><td>课程交付、售后服务</td></tr>
+          <tr><td>学习信息</td><td>学习进度、观看记录、收藏内容</td><td>个性化推荐、学习统计</td></tr>
+          <tr><td>设备信息</td><td>设备型号、操作系统、IP地址</td><td>安全防护、服务优化</td></tr>
+          <tr><td>推广信息</td><td>推广关系、佣金记录、提现信息</td><td>佣金结算、推广统计</td></tr>
+        </table>
+      </div>
+      <div class="privacy-section">
+        <h3>二、信息的使用</h3>
+        <p>2.1 为您提供课程购买、观看、下载等核心服务</p>
+        <p>2.2 向您发送订单通知、课程更新、优惠活动等消息</p>
+        <p>2.3 根据您的学习偏好推荐合适的课程内容</p>
+        <p>2.4 用于平台安全防护、反欺诈检测和风险控制</p>
+        <p>2.5 进行数据分析和产品优化，提升服务质量</p>
+      </div>
+      <div class="privacy-section">
+        <h3>三、信息的存储与保护</h3>
+        <p>3.1 我们在中华人民共和国境内收集和产生的个人信息，将存储在境内服务器。</p>
+        <p>3.2 我们采用加密传输（SSL/TLS）、访问控制、数据脱敏等技术手段保护您的信息。</p>
+        <p>3.3 我们会定期对数据安全措施进行评估和升级，并制定应急处理预案。</p>
+      </div>
+      <div class="privacy-section">
+        <h3>四、信息的共享</h3>
+        <p>我们不会将您的个人信息出售或分享给第三方，但以下情形除外：</p>
+        <ul>
+          <li>获得您的明确同意或授权</li>
+          <li>为完成课程交付所必需的合作伙伴（如支付机构、物流服务商）</li>
+          <li>根据法律法规、行政或司法机关的要求</li>
+          <li>为保护我们或用户的合法权益所必需</li>
+        </ul>
+      </div>
+      <div class="privacy-section">
+        <h3>五、您的权利</h3>
+        <p>5.1 您可以在"我的"页面查看和编辑您的个人信息。</p>
+        <p>5.2 您可以通过账号注销功能注销您的账号，注销后我们将删除或匿名化处理您的个人信息。</p>
+        <p>5.3 您可以关闭消息通知权限，不再接收营销类推送。</p>
+      </div>
+      <div class="privacy-section">
+        <h3>六、未成年人保护</h3>
+        <p>我们特别重视对未成年人信息的保护。如果您是未满14周岁的未成年人，请在监护人的陪同下阅读本政策并使用我们的服务。</p>
+      </div>
+      <div class="privacy-section">
+        <h3>七、政策更新</h3>
+        <p>我们可能会适时修订本隐私政策。当政策发生重大变更时，我们会通过小程序公告、弹窗提醒等方式通知您。</p>
+      </div>
+      <div class="privacy-section">
+        <h3>八、联系我们</h3>
+        <p>如果您对本隐私政策有任何疑问、意见或建议，可以通过以下方式联系我们：</p>
+        <ul>
+          <li>在线客服：小程序内"联系客服"入口</li>
+          <li>电子邮箱：privacy@jindun-edu.com</li>
+          <li>联系电话：400-XXX-XXXX</li>
+        </ul>
+      </div>
+      <div style="text-align:center;padding:20px;font-size:11px;color:#B0B0B0">金盾教育科技有限公司<br>© 2026 Jindun Education. All Rights Reserved.</div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+</script>
+</body>
+</html>

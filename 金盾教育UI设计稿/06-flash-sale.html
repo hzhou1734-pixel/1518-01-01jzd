@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秒杀详情 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.status-time { font-weight:600; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.flash-header { background:linear-gradient(135deg,#E93323,#FF6B35); padding:16px; color:#fff; }
+.flash-title { font-size:16px; font-weight:600; }
+.timer-row { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:12px; }
+.timer-row .label { opacity:0.8; }
+.timer-num { background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:4px; font-size:14px; font-weight:700; font-family:"SF Mono",monospace; }
+.timer-colon { font-weight:700; }
+.course-img { height:200px; display:flex; align-items:center; justify-content:center; }
+.course-img-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.course-img-icon { font-size:60px; opacity:0.9; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
+.course-img-name { color:#fff; font-size:16px; font-weight:600; margin-top:10px; text-shadow:0 1px 4px rgba(0,0,0,0.3); }
+.price-section { background:#fff; padding:14px; }
+.price-row { display:flex; align-items:baseline; gap:8px; }
+.price-now { font-size:24px; font-weight:700; color:#E93323; }
+.price-original { font-size:13px; color:#B0B0B0; text-decoration:line-through; }
+.price-progress { display:flex; justify-content:space-between; font-size:11px; color:#999; margin-top:8px; }
+.progress-bar { height:6px; background:#F0F0F0; border-radius:3px; margin:4px 0 8px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#E93323,#FF6B35); border-radius:3px; width:65%; }
+.spec-section { background:#fff; margin-top:8px; padding:14px; }
+.spec-title { font-size:13px; font-weight:600; color:#333; margin-bottom:8px; }
+.spec-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.spec-item { padding:6px 14px; border:0.5px solid #E0E0E0; border-radius:16px; font-size:12px; color:#666; cursor:pointer; transition:all .15s; }
+.spec-item.active { background:#FFF5F5; border-color:#E93323; color:#E93323; font-weight:500; }
+.intro-section { background:#fff; margin-top:8px; padding:14px; }
+.intro-title { font-size:14px; font-weight:600; color:#333; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.intro-image { background:linear-gradient(135deg,#FFF5F5,#FFE8E8); border-radius:8px; padding:20px; text-align:center; margin-bottom:12px; }
+.intro-text { font-size:12px; color:#666; line-height:1.8; }
+
+/* ========== 横向Tab ========== */
+.detail-tabs { background:#fff; display:flex; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; position:sticky; top:0; z-index:10; }
+.detail-tab { flex:1; text-align:center; padding:12px 0; font-size:13px; color:#999; cursor:pointer; position:relative; }
+.detail-tab.active { color:#E93323; font-weight:600; }
+.detail-tab.active::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:24px; height:3px; background:#E93323; border-radius:2px; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* 课程大纲 */
+.outline-section { background:#fff; margin-top:8px; padding:14px; }
+.chapter-group { margin-bottom:14px; }
+.chapter-group:last-child { margin-bottom:0; }
+.chapter-title { font-size:13px; font-weight:600; color:#333; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.chapter-title::before { content:''; display:inline-block; width:4px; height:14px; background:#E93323; border-radius:2px; flex-shrink:0; }
+.chapter-title .count { font-size:11px; color:#B0B0B0; font-weight:400; margin-left:4px; }
+.outline-item { font-size:12px; color:#666; padding:8px 0 8px 14px; border-bottom:0.5px solid #F5F5F5; display:flex; align-items:center; gap:8px; }
+.outline-item:last-child { border-bottom:none; }
+.outline-num { width:20px; height:20px; border-radius:50%; background:#FFF5F5; color:#E93323; font-size:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:600; }
+.outline-dur { font-size:10px; color:#B0B0B0; margin-left:auto; flex-shrink:0; }
+
+/* 授课老师 */
+.teacher-section { background:#fff; margin-top:8px; margin-bottom:8px; padding:16px 14px; }
+.teacher-card { display:flex; gap:12px; align-items:flex-start; }
+.teacher-avatar-lg { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; flex-shrink:0; }
+.teacher-info { flex:1; }
+.teacher-name-lg { font-size:15px; font-weight:600; color:#333; }
+.teacher-title-lg { font-size:11px; color:#E93323; margin-top:2px; }
+.teacher-bio { font-size:12px; color:#666; line-height:1.6; margin-top:8px; }
+
+.bottom-bar { background:#fff; padding:10px 14px; display:flex; gap:10px; align-items:center; border-top:0.5px solid #F0F0F0; flex-shrink:0; }
+.buy-btn { flex:1; background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; text-align:center; padding:11px; border-radius:22px; font-size:14px; font-weight:600; cursor:pointer; }
+.buy-btn:active { opacity:0.8; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 限时秒杀</div>
+    <div class="scroll-content">
+      <div class="course-img" style="background:linear-gradient(135deg,#E93323,#FF6B35);"><div class="course-img-inner"><span class="course-img-icon"><svg viewBox="0 0 24 24" style="width:60px;height:60px"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg></span><div class="course-img-name">消防冲刺课</div></div></div>
+      <div class="flash-header">
+        <div class="flash-title">一级消防工程师冲刺课程</div>
+        <div class="timer-row"><span class="label">距结束</span><span class="timer-num">02</span><span class="timer-colon">:</span><span class="timer-num">15</span><span class="timer-colon">:</span><span class="timer-num">30</span></div>
+      </div>
+      <div class="price-section">
+        <div class="price-row"><span class="price-now">¥99.00</span><span class="price-original">¥199.00</span></div>
+        <div class="price-progress"><span>已抢 65%</span><span>剩余 35 件</span></div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-title">课程规格</div>
+        <div class="spec-grid"><div class="spec-item active" onclick="selectSpec(this)">全科冲刺班</div><div class="spec-item" onclick="selectSpec(this)">单科冲刺班</div></div>
+      </div>
+      <!-- ========== 横向Tab ========== -->
+      <div class="detail-tabs" id="detailTabs">
+        <div class="detail-tab active" data-tab="info" onclick="switchDetailTab('info')">课程介绍</div>
+        <div class="detail-tab" data-tab="outline" onclick="switchDetailTab('outline')">课程大纲</div>
+        <div class="detail-tab" data-tab="teacher" onclick="switchDetailTab('teacher')">授课老师</div>
+      </div>
+
+      <!-- ========== Tab 1: 课程介绍 ========== -->
+      <div class="tab-panel active" id="panel-info">
+        <div class="intro-section" style="margin-top:0;">
+          <div class="intro-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:middle"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/></svg> 课程介绍</div>
+          <div class="intro-image">
+            <svg width="280" height="140" viewBox="0 0 280 140" style="display:block; margin:0 auto;">
+              <rect x="0" y="0" width="280" height="140" rx="8" fill="#FFF0F0"/>
+              <rect x="20" y="20" width="80" height="100" rx="6" fill="#E93323" opacity="0.15"/>
+              <text x="60" y="75" text-anchor="middle" font-size="28" fill="#E93323">🔥</text>
+              <rect x="110" y="20" width="150" height="46" rx="4" fill="#fff"/>
+              <text x="125" y="36" font-size="10" fill="#E93323" font-weight="600">消防安全技术实务</text>
+              <text x="125" y="54" font-size="8" fill="#999">42课时 · 已更新至2026大纲</text>
+              <rect x="110" y="74" width="150" height="46" rx="4" fill="#fff"/>
+              <text x="125" y="90" font-size="10" fill="#E93323" font-weight="600">消防安全技术综合能力</text>
+              <text x="125" y="108" font-size="8" fill="#999">48课时 · 已更新至2026大纲</text>
+            </svg>
+          </div>
+          <div class="intro-text">
+            本课程根据2026年最新考试大纲编写，系统讲解《消防安全技术实务》《消防安全技术综合能力》《消防安全案例分析》三科核心内容。由多位一线名师联合授课，配套精编讲义、章节练习题、历年真题解析。采用"直播+录播"双模式教学，支持无限次回放，学不会免费重学。
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Tab 2: 课程大纲 ========== -->
+      <div class="tab-panel" id="panel-outline">
+        <div class="outline-section" style="margin-top:0;">
+          <div class="intro-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:middle"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="11" width="8" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="15" width="6" height="2" rx="1" fill="#E93323" opacity=".4"/></svg> 课程大纲</div>
+          <div class="chapter-group">
+            <div class="chapter-title">第一部分：消防安全技术实务 <span class="count">（共6章 · 42课时）</span></div>
+            <div class="outline-item"><span class="outline-num">1</span>燃烧基础知识<span class="outline-dur">8课时</span></div>
+            <div class="outline-item"><span class="outline-num">2</span>建筑防火<span class="outline-dur">12课时</span></div>
+            <div class="outline-item"><span class="outline-num">3</span>消防设施<span class="outline-dur">10课时</span></div>
+            <div class="outline-item"><span class="outline-num">4</span>消防安全评估<span class="outline-dur">5课时</span></div>
+            <div class="outline-item"><span class="outline-num">5</span>防烟排烟系统<span class="outline-dur">4课时</span></div>
+            <div class="outline-item"><span class="outline-num">6</span>灭火救援力量<span class="outline-dur">3课时</span></div>
+          </div>
+          <div class="chapter-group">
+            <div class="chapter-title">第二部分：消防安全技术综合能力 <span class="count">（共6章 · 48课时）</span></div>
+            <div class="outline-item"><span class="outline-num">7</span>消防法规与管理<span class="outline-dur">6课时</span></div>
+            <div class="outline-item"><span class="outline-num">8</span>建筑防火检查<span class="outline-dur">10课时</span></div>
+            <div class="outline-item"><span class="outline-num">9</span>消防设施检测<span class="outline-dur">12课时</span></div>
+            <div class="outline-item"><span class="outline-num">10</span>消防安全评估方法<span class="outline-dur">8课时</span></div>
+            <div class="outline-item"><span class="outline-num">11</span>消防安全管理<span class="outline-dur">6课时</span></div>
+            <div class="outline-item"><span class="outline-num">12</span>社会单位消防管理<span class="outline-dur">6课时</span></div>
+          </div>
+          <div class="chapter-group">
+            <div class="chapter-title">第三部分：消防安全案例分析 <span class="count">（共5章 · 30课时）</span></div>
+            <div class="outline-item"><span class="outline-num">13</span>建筑防火案例<span class="outline-dur">8课时</span></div>
+            <div class="outline-item"><span class="outline-num">14</span>消防设施案例<span class="outline-dur">8课时</span></div>
+            <div class="outline-item"><span class="outline-num">15</span>安全管理案例<span class="outline-dur">6课时</span></div>
+            <div class="outline-item"><span class="outline-num">16</span>火灾事故案例<span class="outline-dur">4课时</span></div>
+            <div class="outline-item"><span class="outline-num">17</span>综合案例实战<span class="outline-dur">4课时</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Tab 3: 授课老师 ========== -->
+      <div class="tab-panel" id="panel-teacher">
+        <div class="teacher-section" style="margin-top:0; margin-bottom:0;">
+          <div class="intro-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:middle"><circle cx="12" cy="7" r="4" fill="#FFB5A7"/><ellipse cx="12" cy="20" rx="7" ry="5" fill="#FFB5A7"/><circle cx="10" cy="6" r="0.8" fill="#333"/><circle cx="14" cy="6" r="0.8" fill="#333"/></svg> 授课老师</div>
+          <div class="teacher-card">
+            <div class="teacher-avatar-lg" style="background:linear-gradient(135deg,#667eea,#764ba2);">王</div>
+            <div class="teacher-info">
+              <div class="teacher-name-lg">王国栋 老师</div>
+              <div class="teacher-title-lg">注册消防工程师 / 一级建造师</div>
+              <div class="teacher-bio">曾任消防部队技术骨干，参与多项国家级消防工程设计与评审。讲课风格深入浅出，善于将复杂原理用生活化案例讲解，被学员称为"消防男神"。独创"考点地图记忆法"，帮助大量学员顺利通过考试。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar"><div class="buy-btn" onclick="navigateTo('07-order-confirm.html')">立即抢购 ¥99.00</div></div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+function selectSpec(el) { document.querySelectorAll('.spec-item').forEach(function(i){i.classList.remove('active');}); el.classList.add('active'); }
+function switchDetailTab(tabKey) {
+  document.querySelectorAll('.detail-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelector('.detail-tab[data-tab="'+tabKey+'"]').classList.add('active');
+  document.getElementById('panel-'+tabKey).classList.add('active');
+}
+</script>
+</body>
+</html>

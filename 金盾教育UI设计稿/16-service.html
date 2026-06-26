@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>联系客服 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:#fff;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:#fff;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:0.5px solid #EEE}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+.service-header{background:linear-gradient(135deg,#E93323,#FF6B35);padding:24px 16px;text-align:center;color:#fff}
+.service-header-title{font-size:18px;font-weight:600;margin-bottom:6px}
+.service-header-sub{font-size:12px;opacity:0.85}
+.chat-box{padding:12px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.chat-msg{max-width:80%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5}
+.chat-msg.left{background:#fff;align-self:flex-start;border-bottom-left-radius:4px;color:#333}
+.chat-msg.right{background:linear-gradient(135deg,#E93323,#FF6B35);align-self:flex-end;border-bottom-right-radius:4px;color:#fff}
+.chat-time{text-align:center;font-size:10px;color:#B0B0B0;margin:8px 0}
+.chat-faq{margin-top:12px;background:#fff;border-radius:10px;overflow:hidden;margin:0 12px}
+.faq-item{padding:14px 16px;border-bottom:0.5px solid #F0F0F0;font-size:13px;color:#333;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-item:active{background:#FAFAFA}
+.faq-item:last-child{border-bottom:none}
+.faq-arrow{color:#C0C0C0;font-size:14px}
+.quick-actions{padding:12px;display:flex;gap:8px}
+.quick-btn{flex:1;background:#fff;border:0.5px solid #E0E0E0;border-radius:20px;padding:10px 0;text-align:center;font-size:12px;color:#333;cursor:pointer;transition:all .15s}
+.quick-btn:active{background:#FFF0ED;border-color:#E93323;color:#E93323}
+.chat-input-bar{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:0.5px solid #EEE;flex-shrink:0;position:sticky;bottom:0}
+.chat-input{flex:1;border:0.5px solid #E0E0E0;border-radius:20px;padding:8px 14px;font-size:13px;outline:none}
+.chat-input:focus{border-color:#E93323}
+.chat-send{background:#E93323;color:#fff;border:none;border-radius:20px;padding:8px 18px;font-size:13px;cursor:pointer}
+.chat-send:active{opacity:0.8}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">联系客服</span></div>
+    <div class="service-header"><div class="service-header-title"><svg viewBox="0 0 24 24" style="width:18px;height:18px;vertical-align:middle"><rect x="2" y="4" width="20" height="14" rx="6" fill="#B8C5FF"/><polygon points="7,22 9,18 15,18 17,22" fill="#B8C5FF"/></svg> 金盾教育在线客服</div><div class="service-header-sub">服务时间：周一至周日 9:00-21:00</div></div>
+    <div class="scroll-content">
+      <div class="chat-box">
+        <div class="chat-time">今天 14:20</div>
+        <div class="chat-msg left">您好！欢迎咨询金盾教育，请问有什么可以帮您？</div>
+        <div class="chat-msg right">我想咨询一下消防工程师的课程</div>
+        <div class="chat-msg left">好的～我们的消防工程师课程包含一级和二级全套课程，现在报名还有限时优惠活动哦！您可以点击下方查看详情。</div>
+      </div>
+      <div class="quick-actions">
+        <div class="quick-btn" onclick="showToast('已发送：课程咨询')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="2" y="3" width="8" height="6" rx="2" fill="#FF9A9E"/><rect x="13" y="3" width="8" height="6" rx="2" fill="#A1E8CC"/></svg> 课程咨询</div>
+        <div class="quick-btn" onclick="showToast('已发送：退换课')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M3 12a9 9 0 0115-7l2-2" stroke="#A1E8CC" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M21 12a9 9 0 01-15 7l-2 2" stroke="#FF6B35" stroke-width="2" fill="none" stroke-linecap="round"/></svg> 退换课</div>
+        <div class="quick-btn" onclick="showToast('已发送：支付问题')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="2" y="4" width="20" height="16" rx="3" fill="#FF9A9E"/><rect x="7" y="11" width="10" height="2" rx="1" fill="#fff" opacity=".5"/></svg> 支付问题</div>
+      </div>
+      <div class="chat-faq">
+        <div class="faq-item" onclick="showToast('已展开')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/></svg> 如何购买课程？ <span class="faq-arrow">›</span></div>
+        <div class="faq-item" onclick="showToast('已展开')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="12" cy="12" r="10" fill="#B8C5FF"/><circle cx="12" cy="12" r="8" fill="#fff"/><line x1="12" y1="12" x2="12" y2="7" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="16" y2="12" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/></svg> 课程有效期多久？ <span class="faq-arrow">›</span></div>
+        <div class="faq-item" onclick="showToast('已展开')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="12" cy="12" r="10" fill="#FECF6A"/><text x="12" y="16" font-size="10" fill="#333" font-weight="bold" text-anchor="middle">¥</text></svg> 可以退款吗？ <span class="faq-arrow">›</span></div>
+        <div class="faq-item" onclick="showToast('已展开')"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="6" y="1" width="12" height="22" rx="3" fill="#B8C5FF"/><rect x="9" y="3" width="6" height="16" rx="1" fill="#fff" opacity=".5"/></svg> 支持手机学习吗？ <span class="faq-arrow">›</span></div>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+    <div class="chat-input-bar">
+      <input class="chat-input" placeholder="请输入您的问题...">
+      <button class="chat-send" onclick="showToast('已发送')">发送</button>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+</script>
+</body>
+</html>

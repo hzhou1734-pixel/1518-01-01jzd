@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编辑收货地址 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:#fff;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:#fff;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:0.5px solid #EEE}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none;user-select:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+
+.form-group{background:#fff;margin:10px 0;border-radius:10px;overflow:hidden}
+.form-row{padding:14px 16px;border-bottom:0.5px solid #F0F0F0;display:flex;align-items:center}
+.form-row:last-child{border-bottom:none}
+.form-label{font-size:14px;color:#333;width:70px;flex-shrink:0}
+.form-input{flex:1;border:none;outline:none;font-size:14px;color:#333;text-align:right}
+.form-input::placeholder{color:#CCC}
+.form-input-arrow{flex:1;border:none;outline:none;font-size:14px;color:#333;text-align:right;cursor:pointer;background:transparent;padding:0;font-family:inherit}
+.form-input-arrow::after{content:' ›';color:#CCC;font-size:16px;margin-left:4px}
+.form-row-tap{cursor:pointer}
+.form-row-tap:active{background:#F9F9F9}
+
+.switch-row{padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.switch-label{font-size:14px;color:#333}
+.switch-track{width:46px;height:28px;background:#EEE;border-radius:14px;position:relative;cursor:pointer;transition:background .2s}
+.switch-track.on{background:#E93323}
+.switch-dot{position:absolute;top:2px;left:2px;width:24px;height:24px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.switch-track.on .switch-dot{left:20px}
+
+.del-btn-area{padding:16px 0}
+.del-btn{width:100%;background:#fff;border:1px solid #E93323;color:#E93323;border-radius:22px;padding:12px;font-size:14px;cursor:pointer;display:none}
+.del-btn.visible{display:block}
+.del-btn:active{opacity:0.7}
+
+.save-btn-area{padding:20px 16px 30px}
+.save-btn{width:100%;background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;border:none;border-radius:22px;padding:12px;font-size:15px;font-weight:500;cursor:pointer}
+.save-btn:active{opacity:0.85}
+
+/* 省市区三级联动面板 */
+.region-overlay{position:absolute;top:0;left:0;right:0;bottom:0;z-index:200;display:none;flex-direction:column}
+.region-overlay.show{display:flex}
+.region-mask{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35)}
+.region-sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:12px 12px 0 0;max-height:340px;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s cubic-bezier(0.4,0,0.2,1)}
+.region-overlay.show .region-sheet{transform:translateY(0)}
+.region-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F0F0F0;flex-shrink:0}
+.region-header-title{font-size:14px;font-weight:600;color:#333}
+.region-header-close{font-size:18px;color:#999;cursor:pointer;padding:4px 8px;user-select:none}
+.region-columns{display:flex;flex:1;overflow:hidden}
+.region-col{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;border-right:0.5px solid #F5F5F5}
+.region-col:last-child{border-right:none}
+.region-col::-webkit-scrollbar{width:0}
+.region-col-item{padding:12px 14px;font-size:13px;color:#333;cursor:pointer;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;user-select:none}
+.region-col-item:active{background:#F9F9F9}
+.region-col-item.selected{color:#E93323;font-weight:600;background:#FFF5F5}
+.region-col-empty{padding:12px 14px;font-size:13px;color:#CCC;text-align:center}
+.region-footer{flex-shrink:0;padding:10px 14px 18px;border-top:0.5px solid #F0F0F0}
+.region-confirm{width:100%;padding:11px;background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;border:none;border-radius:22px;font-size:14px;font-weight:500;cursor:pointer}
+.region-confirm:active{opacity:0.85}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+.confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:1000}
+.confirm-overlay.show{display:flex}
+.confirm-box{background:#fff;width:280px;border-radius:14px;overflow:hidden;text-align:center}
+.confirm-title{font-size:16px;font-weight:600;color:#333;padding:24px 16px 8px}
+.confirm-msg{font-size:13px;color:#888;padding:0 16px 20px;line-height:1.6}
+.confirm-btns{display:flex;border-top:0.5px solid #EEE}
+.confirm-btns span{flex:1;padding:12px;font-size:14px;cursor:pointer;user-select:none}
+.confirm-btns span:first-child{border-right:0.5px solid #EEE;color:#999}
+.confirm-btns span:last-child{color:#E93323;font-weight:600}
+.confirm-btns span:active{background:#F5F5F5}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title" id="pageTitle">新增收货地址</span></div>
+    <div class="scroll-content">
+      <div class="form-group">
+        <div class="form-row"><span class="form-label">收货人</span><input class="form-input" id="inpName" placeholder="请输入收货人姓名"></div>
+        <div class="form-row"><span class="form-label">手机号码</span><input class="form-input" id="inpPhone" placeholder="请输入手机号码" type="tel"></div>
+        <div class="form-row form-row-tap" onclick="openRegionPicker()"><span class="form-label">所在地区</span><span class="form-input-arrow" id="regionText">请选择地区</span></div>
+        <div class="form-row"><span class="form-label">详细地址</span><input class="form-input" id="inpDetail" placeholder="街道/门牌号等"></div>
+      </div>
+      <div class="form-group">
+        <div class="switch-row">
+          <span class="switch-label">设为默认地址</span>
+          <div class="switch-track" id="defaultSwitch" onclick="toggleDefault()"><div class="switch-dot"></div></div>
+        </div>
+      </div>
+      <div class="del-btn-area"><button class="del-btn" id="delBtn" onclick="delAddr()">删除收货地址</button></div>
+      <div class="save-btn-area"><button class="save-btn" onclick="saveAddr()">保存</button></div>
+    </div>
+  </div>
+  <!-- 省市区三级联动面板 -->
+  <div class="region-overlay" id="regionOverlay">
+    <div class="region-mask" onclick="closeRegionPicker()"></div>
+    <div class="region-sheet" id="regionSheet">
+      <div class="region-header">
+        <span class="region-header-title">选择省市区</span>
+        <span class="region-header-close" onclick="closeRegionPicker()">✕</span>
+      </div>
+      <div class="region-columns">
+        <div class="region-col" id="colProvince"></div>
+        <div class="region-col" id="colCity"></div>
+        <div class="region-col" id="colDistrict"></div>
+      </div>
+      <div class="region-footer">
+        <button class="region-confirm" onclick="confirmRegion()">确 定</button>
+      </div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-title">删除收货地址</div>
+    <div class="confirm-msg">确定要删除该收货地址吗？<br>删除后不可恢复</div>
+    <div class="confirm-btns">
+      <span onclick="cancelDelete()">取消</span>
+      <span onclick="confirmDelete()">确定</span>
+    </div>
+  </div>
+</div>
+<script>
+var mode = 'add';
+var editingId = null;
+var isDefault = false;
+
+// 省市区数据
+var ADDR_DATA = {
+  "北京市":{"北京市":["东城区","西城区","朝阳区","海淀区","丰台区","石景山区","通州区","大兴区","顺义区","昌平区","房山区","门头沟区","平谷区","怀柔区","密云区","延庆区"]},
+  "上海市":{"上海市":["黄浦区","徐汇区","长宁区","静安区","普陀区","虹口区","杨浦区","浦东新区","闵行区","宝山区","嘉定区","金山区","松江区","青浦区","奉贤区","崇明区"]},
+  "广东省":{"广州市":["天河区","白云区","海珠区","越秀区","荔湾区","番禺区","黄埔区","花都区","南沙区","增城区","从化区"],"深圳市":["南山区","福田区","罗湖区","宝安区","龙岗区","龙华区","光明区","坪山区","盐田区"],"东莞市":["莞城区","南城区","东城区","万江区"],"佛山市":["禅城区","南海区","顺德区","三水区","高明区"],"珠海市":["香洲区","斗门区","金湾区"],"惠州市":["惠城区","惠阳区","惠东县","博罗县"],"中山市":["石岐区","东区","西区","南区","五桂山"]},
+  "浙江省":{"杭州市":["西湖区","上城区","拱墅区","滨江区","萧山区","余杭区","临平区","钱塘区","富阳区","临安区"],"宁波市":["海曙区","鄞州区","江北区","北仑区","镇海区"],"温州市":["鹿城区","龙湾区","瓯海区"],"嘉兴市":["南湖区","秀洲区"],"金华市":["婺城区","金东区"]},
+  "江苏省":{"南京市":["玄武区","秦淮区","建邺区","鼓楼区","栖霞区","雨花台区","江宁区","浦口区","六合区"],"苏州市":["姑苏区","虎丘区","吴中区","相城区","吴江区","工业园区"],"无锡市":["梁溪区","锡山区","惠山区","滨湖区","新吴区"]},
+  "湖北省":{"武汉市":["武昌区","洪山区","江岸区","江汉区","硚口区","汉阳区","青山区","东西湖区","江夏区","黄陂区"]},
+  "四川省":{"成都市":["锦江区","青羊区","金牛区","武侯区","成华区","龙泉驿区","青白江区","新都区","温江区","双流区","郫都区","高新区"]},
+  "重庆市":{"重庆市":["渝中区","江北区","南岸区","九龙坡区","沙坪坝区","大渡口区","渝北区","巴南区","北碚区"]},
+  "山东省":{"济南市":["历下区","市中区","槐荫区","天桥区","历城区","长清区","章丘区"],"青岛市":["市南区","市北区","崂山区","李沧区","城阳区","黄岛区"],"烟台市":["芝罘区","福山区","莱山区","牟平区"]},
+  "福建省":{"福州市":["鼓楼区","台江区","仓山区","晋安区","马尾区","长乐区"],"厦门市":["思明区","湖里区","集美区","海沧区","同安区","翔安区"]},
+  "湖南省":{"长沙市":["芙蓉区","天心区","岳麓区","开福区","雨花区","望城区"]},
+  "河南省":{"郑州市":["中原区","二七区","管城回族区","金水区","上街区","惠济区"],"洛阳市":["老城区","西工区","瀍河区","涧西区","洛龙区"]},
+  "安徽省":{"合肥市":["瑶海区","庐阳区","蜀山区","包河区"]},
+  "江西省":{"南昌市":["东湖区","西湖区","青云谱区","青山湖区","新建区"]},
+  "河北省":{"石家庄市":["长安区","桥西区","新华区","裕华区","井陉矿区"]},
+  "辽宁省":{"沈阳市":["和平区","沈河区","大东区","皇姑区","铁西区","浑南区"]}
+};
+
+// 当前选择状态
+var selProvince = '';
+var selCity = '';
+var selDistrict = '';
+
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="14-address.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+
+// 读取 localStorage 中的地址数据
+function getAddresses(){
+  try{var d=localStorage.getItem('jd_addresses');return d?JSON.parse(d):null}catch(e){return null}
+}
+function setAddresses(arr){
+  try{localStorage.setItem('jd_addresses',JSON.stringify(arr))}catch(e){}
+}
+
+// 省市区选择器
+function openRegionPicker(){
+  document.getElementById('regionOverlay').classList.add('show');
+  renderProvince();
+  // 重置选中态
+  selCity = ''; selDistrict = '';
+  document.getElementById('colCity').innerHTML = '<div class="region-col-empty">请选择</div>';
+  document.getElementById('colDistrict').innerHTML = '<div class="region-col-empty">请选择</div>';
+}
+
+function closeRegionPicker(){
+  document.getElementById('regionOverlay').classList.remove('show');
+}
+
+function renderProvince(){
+  var col = document.getElementById('colProvince');
+  var html = '';
+  var provinces = Object.keys(ADDR_DATA);
+  for (var i=0; i<provinces.length; i++){
+    var cls = (selProvince === provinces[i]) ? ' selected' : '';
+    html += '<div class="region-col-item'+cls+'" onclick="pickProvince(\''+provinces[i]+'\')">'+provinces[i]+'</div>';
+  }
+  col.innerHTML = html;
+}
+
+function pickProvince(p){
+  selProvince = p;
+  selCity = '';
+  selDistrict = '';
+  renderProvince();
+  renderCity();
+  document.getElementById('colDistrict').innerHTML = '<div class="region-col-empty">请选择</div>';
+}
+
+function renderCity(){
+  var col = document.getElementById('colCity');
+  if (!selProvince || !ADDR_DATA[selProvince]){
+    col.innerHTML = '<div class="region-col-empty">请选择</div>';
+    return;
+  }
+  var cities = Object.keys(ADDR_DATA[selProvince]);
+  var html = '';
+  for (var i=0; i<cities.length; i++){
+    var cls = (selCity === cities[i]) ? ' selected' : '';
+    html += '<div class="region-col-item'+cls+'" onclick="pickCity(\''+cities[i]+'\')">'+cities[i]+'</div>';
+  }
+  col.innerHTML = html;
+  col.scrollTop = 0;
+}
+
+function pickCity(c){
+  selCity = c;
+  selDistrict = '';
+  renderCity();
+  renderDistrict();
+}
+
+function renderDistrict(){
+  var col = document.getElementById('colDistrict');
+  if (!selProvince || !selCity || !ADDR_DATA[selProvince][selCity]){
+    col.innerHTML = '<div class="region-col-empty">请选择</div>';
+    return;
+  }
+  var districts = ADDR_DATA[selProvince][selCity];
+  var html = '';
+  for (var i=0; i<districts.length; i++){
+    var cls = (selDistrict === districts[i]) ? ' selected' : '';
+    html += '<div class="region-col-item'+cls+'" onclick="pickDistrict(\''+districts[i]+'\')">'+districts[i]+'</div>';
+  }
+  col.innerHTML = html;
+  col.scrollTop = 0;
+}
+
+function pickDistrict(d){
+  selDistrict = d;
+  renderDistrict();
+}
+
+function confirmRegion(){
+  if (!selProvince || !selCity || !selDistrict){
+    showToast('请完整选择省/市/区');
+    return;
+  }
+  document.getElementById('regionText').textContent = selProvince + ' ' + selCity + ' ' + selDistrict;
+  document.getElementById('regionText').style.color = '#333';
+  closeRegionPicker();
+}
+
+// 初始化：根据 URL 参数判断新增还是编辑
+(function init(){
+  var params=new URLSearchParams(window.location.search);
+  mode=params.get('mode')||'add';
+  editingId=params.get('id')?parseInt(params.get('id')):null;
+
+  document.getElementById('pageTitle').textContent=mode==='edit'?'编辑收货地址':'新增收货地址';
+
+  if(mode==='edit' && editingId){
+    document.getElementById('delBtn').classList.add('visible');
+    var addrs=getAddresses();
+    if(addrs){
+      var a=addrs.find(function(x){return x.id===editingId});
+      if(a){
+        document.getElementById('inpName').value=a.name||'';
+        document.getElementById('inpPhone').value=a.phone||'';
+        var regionParts = (a.region||'').split(' ');
+        if (regionParts.length >= 3){
+          selProvince = regionParts[0] || '';
+          selCity = regionParts[1] || '';
+          selDistrict = regionParts[2] || '';
+        }
+        document.getElementById('regionText').textContent=a.region||'请选择地区';
+        if (a.region) document.getElementById('regionText').style.color='#333';
+        document.getElementById('inpDetail').value=a.detail||'';
+        isDefault=a.isDefault||false;
+        updateSwitch();
+      }
+    }
+  }
+})();
+
+function toggleDefault(){
+  isDefault=!isDefault;
+  updateSwitch();
+}
+function updateSwitch(){
+  var sw=document.getElementById('defaultSwitch');
+  if(isDefault){sw.classList.add('on')}else{sw.classList.remove('on')}
+}
+
+// 保存
+function saveAddr(){
+  var name=document.getElementById('inpName').value.trim();
+  var phone=document.getElementById('inpPhone').value.trim();
+  var region=document.getElementById('regionText').textContent;
+  var detail=document.getElementById('inpDetail').value.trim();
+
+  if(!name){showToast('请输入收货人姓名');return}
+  if(!phone){showToast('请输入手机号码');return}
+  if(region==='请选择地区'){showToast('请选择所在地区');return}
+  if(!detail){showToast('请输入详细地址');return}
+
+  var addrs=getAddresses()||[];
+
+  if(isDefault){
+    addrs.forEach(function(a){a.isDefault=false});
+  }
+
+  if(mode==='edit' && editingId){
+    var ea=addrs.find(function(x){return x.id===editingId});
+    if(ea){
+      ea.name=name;ea.phone=phone;ea.region=region;ea.detail=detail;ea.isDefault=isDefault;
+    }
+    setAddresses(addrs);
+    showToast('地址已更新');
+  }else{
+    var maxId=0;
+    addrs.forEach(function(a){if(a.id>maxId)maxId=a.id});
+    addrs.push({id:maxId+1,name:name,phone:phone,region:region,detail:detail,isDefault:isDefault});
+    setAddresses(addrs);
+    showToast('新增成功');
+  }
+
+  setTimeout(function(){goBack()},600);
+}
+
+// 删除
+var pendingDelId = null;
+function delAddr(){
+  pendingDelId = editingId;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+function cancelDelete(){
+  document.getElementById('confirmOverlay').classList.remove('show');
+  pendingDelId = null;
+}
+function confirmDelete(){
+  document.getElementById('confirmOverlay').classList.remove('show');
+  var id = pendingDelId;
+  pendingDelId = null;
+  if(id !== null && id !== undefined){
+    var addrs = getAddresses() || [];
+    addrs = addrs.filter(function(a){ return a.id !== id; });
+    setAddresses(addrs);
+    showToast('已删除');
+    setTimeout(function(){ goBack(); }, 600);
+  }
+}
+</script>
+</body>
+</html>

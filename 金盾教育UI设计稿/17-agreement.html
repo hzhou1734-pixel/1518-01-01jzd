@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用户协议 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:#fff;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:#fff;display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:0.5px solid #EEE}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.scroll-content::-webkit-scrollbar{width:0}
+.agreement-update{font-size:11px;color:#999;text-align:center;margin-bottom:16px}
+.agreement-section{margin-bottom:16px}
+.agreement-section h3{font-size:14px;font-weight:600;color:#333;margin-bottom:8px;padding-left:8px;border-left:3px solid #E93323}
+.agreement-section p{font-size:12px;color:#555;line-height:1.8;text-indent:2em}
+.agreement-section ul{font-size:12px;color:#555;line-height:1.8;padding-left:2em;list-style:decimal}
+.agreement-section li{margin-bottom:4px}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">用户协议</span></div>
+    <div class="scroll-content">
+      <div class="agreement-update">更新日期：2026年06月01日<br>生效日期：2026年06月01日</div>
+      <div class="agreement-section">
+        <h3>一、总则</h3>
+        <p>欢迎使用金盾教育分销小程序（以下简称"本平台"）。本协议是您与金盾教育科技有限公司（以下简称"本公司"）之间关于使用本平台服务所订立的协议。请您在使用本平台服务前仔细阅读本协议的全部内容，特别是以粗体、下划线等方式标注的内容。</p>
+        <p>您点击同意、注册、登录或使用本平台服务，即表示您已充分阅读、理解并接受本协议的全部内容，同意受本协议的约束。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>二、账号注册与使用</h3>
+        <p>2.1 您在注册时应提供真实、准确、完整的个人信息，并在信息变更时及时更新。</p>
+        <p>2.2 您应妥善保管账号和密码，因账号或密码泄露导致的损失由您自行承担。</p>
+        <p>2.3 一个手机号仅限注册一个账号，严禁将账号出借、转让或出售给他人使用。</p>
+        <p>2.4 如发现任何未经授权使用您账号的情况，应立即通知本公司。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>三、课程购买与使用</h3>
+        <p>3.1 您购买课程后，可在有效期内不限次数观看课程内容。课程有效期以购买时页面标注为准。</p>
+        <p>3.2 课程内容仅供购买者本人学习使用，严禁录制、传播、转售或以其他方式侵犯本公司知识产权。</p>
+        <p>3.3 虚拟课程一经购买，除法定情形外，不予退款。具体退款政策请参见课程详情页说明。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>四、推广员条款</h3>
+        <p>4.1 申请成为推广员后，您可通过分享课程链接获取佣金。佣金比例以推广员中心展示为准。</p>
+        <p>4.2 推广员不得采用虚假宣传、诱导消费、刷单等违规手段获取佣金，一经发现将取消推广资格并追回违规所得。</p>
+        <p>4.3 佣金结算周期为每月1-5日结算上月佣金，提现至微信零钱需满100元起提。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>五、用户行为规范</h3>
+        <p>您在使用本平台服务时，不得从事以下行为：</p>
+        <ul>
+          <li>发布违法、违规、侵权或不良信息</li>
+          <li>干扰本平台正常运营或侵害他人合法权益</li>
+          <li>利用技术手段恶意刷单、套取优惠或佣金</li>
+          <li>未经授权收集、使用其他用户个人信息</li>
+        </ul>
+      </div>
+      <div class="agreement-section">
+        <h3>六、知识产权</h3>
+        <p>本平台所有课程内容（包括但不限于视频、音频、文字、图片、题库等）的知识产权归本公司或内容提供方所有。未经书面许可，任何单位或个人不得以任何形式复制、传播、改编或商业利用。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>七、免责声明</h3>
+        <p>7.1 因不可抗力、系统维护、网络故障等原因导致的服务中断，本公司不承担责任，但将尽力恢复服务。</p>
+        <p>7.2 本平台提供的课程内容仅供学习参考，不构成任何考试承诺或保证。</p>
+      </div>
+      <div class="agreement-section">
+        <h3>八、其他</h3>
+        <p>8.1 本协议的解释、效力及争议解决，适用中华人民共和国法律。</p>
+        <p>8.2 如本协议任何条款被认定为无效，不影响其他条款的效力。</p>
+        <p>8.3 本公司有权根据业务需要修改本协议，修改后的协议将在平台公示。继续使用服务即视为接受修改后的协议。</p>
+      </div>
+      <div style="text-align:center;padding:20px;font-size:11px;color:#B0B0B0">金盾教育科技有限公司<br>© 2026 Jindun Education. All Rights Reserved.</div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+</script>
+</body>
+</html>

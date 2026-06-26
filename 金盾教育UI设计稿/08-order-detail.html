@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>订单详情 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.status-time { font-weight:600; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.nav-bar { background:#fff; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border-bottom:0.5px solid #F0F0F0; flex-shrink:0; }
+.nav-back { cursor:pointer; font-size:16px; color:#333; text-decoration:none; }
+.nav-back:active { opacity:0.5; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+.status-card { background:linear-gradient(135deg,#E93323,#FF6B35); padding:20px 16px; color:#fff; text-align:center; }
+.status-icon { font-size:36px; }
+.status-text { font-size:18px; font-weight:700; margin-top:6px; }
+.status-sub { font-size:12px; opacity:0.8; margin-top:4px; }
+.info-card { background:#fff; margin:8px 12px 0; border-radius:10px; overflow:hidden; }
+.info-row { display:flex; padding:12px 14px; font-size:12px; color:#666; border-bottom:0.5px solid #F5F5F5; }
+.info-row:last-child { border-bottom:none; }
+.info-label { color:#999; width:70px; flex-shrink:0; }
+.info-value { color:#333; flex:1; }
+.course-card { background:#fff; margin:8px 12px 0; border-radius:10px; padding:12px; display:flex; gap:10px; align-items:center; }
+.course-img { width:64px; height:64px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.course-img-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.course-img-icon { font-size:24px; opacity:0.85; }
+.course-img-tag { font-size:7px; color:rgba(255,255,255,0.9); }
+.course-name { font-size:13px; color:#333; line-height:1.4; }
+.course-price { font-size:12px; color:#999; margin-top:4px; }
+.price-card { background:#fff; margin:8px 12px 0; border-radius:10px; overflow:hidden; }
+.price-row { display:flex; justify-content:space-between; padding:10px 14px; font-size:12px; color:#666; border-bottom:0.5px solid #F5F5F5; }
+.price-row:last-child { border-bottom:none; color:#333; font-weight:600; }
+.price-amount { color:#E93323; font-size:16px; font-weight:700; }
+.time-card { background:#fff; margin:8px 12px 0; border-radius:10px; overflow:hidden; }
+.time-row { padding:10px 14px; font-size:12px; color:#666; border-bottom:0.5px solid #F5F5F5; display:flex; gap:8px; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 订单详情</div>
+    <div class="scroll-content">
+      <div class="status-card"><div class="status-icon"><svg viewBox="0 0 24 24" style="width:36px;height:36px"><rect x="3" y="6" width="18" height="14" rx="2" fill="#FECF6A"/><path d="M12 6V2" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke="#FF6B35" stroke-width="1.5" opacity=".5"/></svg></div><div class="status-text">待发货</div><div class="status-sub">您的订单已支付成功，等待商家发货</div></div>
+      <div class="info-card"><div class="info-row"><span class="info-label">收货人</span><span class="info-value">张同学 138****8888</span></div><div class="info-row"><span class="info-label">收货地址</span><span class="info-value">广东省深圳市南山区科技园路1号创新大厦A座1208</span></div></div>
+      <div class="course-card"><div class="course-img" style="background:linear-gradient(135deg,#DC2626,#991B1B);"><div class="course-img-inner"><span class="course-img-icon"><svg viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg></span><span class="course-img-tag">消防</span></div></div><div><div class="course-name">一级消防工程师全科取证班</div><div class="course-price">×1</div></div></div>
+      <div class="price-card"><div class="price-row"><span>商品金额</span><span>¥2999.00</span></div><div class="price-row"><span>优惠券</span><span style="color:#E93323;">-¥200.00</span></div><div class="price-row"><span>实付金额</span><span class="price-amount">¥2799.00</span></div></div>
+      <div class="info-card"><div class="info-row"><span class="info-label">订单编号</span><span class="info-value">KD20260625001</span></div><div class="info-row"><span class="info-label">下单时间</span><span class="info-value">2026-06-25 09:41:30</span></div><div class="info-row"><span class="info-label">支付时间</span><span class="info-value">2026-06-25 09:42:15</span></div><div class="info-row"><span class="info-label">支付方式</span><span class="info-value">微信支付</span></div></div>
+      <div class="time-card"><div class="time-row"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".4"/></svg> 订单创建：2026-06-25 09:41:30</div><div class="time-row"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><circle cx="12" cy="12" r="10" fill="#FECF6A"/><text x="12" y="16" font-size="10" fill="#333" font-weight="bold" text-anchor="middle">¥</text></svg> 支付成功：2026-06-25 09:42:15</div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+</script>
+</body>
+</html>

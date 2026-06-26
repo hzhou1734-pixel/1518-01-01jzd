@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分类页 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+.status-bar { height:54px; background:#fff; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#000; flex-shrink:0; }
+.status-time { font-weight:600; letter-spacing:0.5px; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.search-bar { background:#fff; padding:10px 14px; cursor:pointer; flex-shrink:0; }
+.search-input { display:flex; align-items:center; gap:8px; background:#F5F5F5; border-radius:20px; padding:8px 14px; }
+.search-input span { color:#B0B0B0; font-size:13px; }
+.category-body { flex:1; display:flex; overflow:hidden; }
+/* 左侧一级分类 */
+.left-nav { width:90px; background:#F8F8F8; overflow-y:auto; flex-shrink:0; }
+.left-nav::-webkit-scrollbar { width:0; }
+.left-item { padding:14px 10px; text-align:center; font-size:13px; color:#666; cursor:pointer; position:relative; transition:background .15s; white-space:nowrap; }
+.left-item.active { background:#fff; color:#E93323; font-weight:600; }
+.left-item.active::before { content:''; position:absolute; left:0; top:8px; bottom:8px; width:3px; background:#E93323; border-radius:0 2px 2px 0; }
+.left-item:active { background:#fff; }
+/* 右侧内容区 */
+.right-panel { flex:1; background:#fff; overflow-y:auto; display:flex; flex-direction:column; }
+.right-panel::-webkit-scrollbar { width:0; }
+/* 二级分类标签行 */
+.sub-cat-row { padding:12px 12px 0; flex-shrink:0; }
+.sub-cat-scroll { display:flex; flex-wrap:wrap; gap:8px; }
+.sub-cat-tag { display:inline-block; padding:6px 14px; border-radius:16px; font-size:12px; color:#666; background:#F5F5F5; cursor:pointer; transition:all .15s; white-space:nowrap; border:0.5px solid transparent; }
+.sub-cat-tag.active { color:#E93323; background:#FFF0ED; border-color:#E93323; font-weight:500; }
+.sub-cat-tag:active { transform:scale(0.95); }
+/* 课程列表 */
+.course-section { flex:1; padding:10px 12px 16px; overflow-y:auto; }
+.course-section::-webkit-scrollbar { width:0; }
+.course-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.course-card { border-radius:8px; overflow:hidden; border:0.5px solid #F0F0F0; cursor:pointer; transition:transform .15s; background:#fff; }
+.course-card:active { transform:scale(0.97); }
+.course-img { height:100px; display:flex; align-items:center; justify-content:center; }
+.course-img-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.course-img-icon { font-size:28px; opacity:0.85; }
+.course-img-tag { font-size:9px; color:rgba(255,255,255,0.9); font-weight:500; margin-top:2px; }
+.course-info { padding:6px 8px 8px; }
+.course-name { font-size:11px; color:#333; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.course-price { font-size:13px; font-weight:600; color:#E93323; margin-top:4px; }
+.course-price .original { font-size:10px; color:#B0B0B0; text-decoration:line-through; font-weight:400; margin-left:4px; }
+/* 空状态 */
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center; }
+.empty-state-icon { font-size:48px; margin-bottom:12px; opacity:0.4; }
+.empty-state-text { font-size:13px; color:#B0B0B0; }
+/* 底部导航 */
+.tab-bar { display:flex; background:#fff; border-top:0.5px solid #EEE; padding:6px 0 20px; flex-shrink:0; }
+.tab-item { flex:1; text-align:center; font-size:10px; padding:4px 0; cursor:pointer; color:#B0B0B0; text-decoration:none; transition:color .15s; }
+.tab-item .tab-icon { width:24px; height:24px; display:block; margin:0 auto 2px; }
+.tab-item.active .tab-icon svg { opacity:1; }
+.tab-item .tab-icon svg { display:block; width:24px; height:24px; }
+.tab-item.active { color:#E93323; }
+.tab-item:active { opacity:0.7; }
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="search-bar" onclick="showToast('搜索课程')"><div class="search-input"><svg viewBox="0 0 24 24" width="14" height="14" style="flex-shrink:0"><circle cx="10" cy="10" r="6" fill="none" stroke="#B0B0B0" stroke-width="2"/><line x1="14.5" y1="14.5" x2="20" y2="20" stroke="#B0B0B0" stroke-width="2" stroke-linecap="round"/></svg><span>搜索课程</span></div></div>
+    <div class="category-body">
+      <!-- 左侧：一级分类 -->
+      <div class="left-nav">
+        <div class="left-item active" data-index="0" onclick="switchPrimary(this,0)">全部课程</div>
+        <div class="left-item" data-index="1" onclick="switchPrimary(this,1)">消防工程师</div>
+        <div class="left-item" data-index="2" onclick="switchPrimary(this,2)">建造师</div>
+        <div class="left-item" data-index="3" onclick="switchPrimary(this,3)">会计职称</div>
+        <div class="left-item" data-index="4" onclick="switchPrimary(this,4)">考研专区</div>
+        <div class="left-item" data-index="5" onclick="switchPrimary(this,5)">教师资格</div>
+        <div class="left-item" data-index="6" onclick="switchPrimary(this,6)">公务员</div>
+        <div class="left-item" data-index="7" onclick="switchPrimary(this,7)">司法考试</div>
+        <div class="left-item" data-index="8" onclick="switchPrimary(this,8)">医药健康</div>
+      </div>
+      <!-- 右侧：二级分类标签 + 课程列表 -->
+      <div class="right-panel">
+        <div class="sub-cat-row" id="subCatRow">
+          <div class="sub-cat-scroll" id="subCatScroll"><!-- JS动态渲染 --></div>
+        </div>
+        <div class="course-section" id="courseSection">
+          <div class="course-grid" id="courseGrid"><!-- JS动态渲染 --></div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <a class="tab-item" href="01-home.html"><span class="tab-icon"><svg viewBox="0 0 24 24"><defs><linearGradient id="hg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF6B35"/><stop offset="100%" stop-color="#E93323"/></linearGradient></defs><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="url(#hg2)"/><rect x="9" y="13" width="6" height="8" rx="2" fill="#FFECD2"/><circle cx="16" cy="11" r="2" fill="#FFECD2"/><rect x="8" y="2" width="3" height="3" rx="1" fill="#FF6B35" opacity=".6"/><circle cx="10" cy="0.5" r="1.5" fill="#FF9A9E"/></svg></span>首页</a>
+      <a class="tab-item active" href="02-category.html"><span class="tab-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="3" fill="#FF9A9E"/><rect x="13" y="2" width="9" height="9" rx="3" fill="#FECF6A"/><rect x="2" y="13" width="9" height="9" rx="3" fill="#A1E8CC"/><rect x="13" y="13" width="9" height="9" rx="3" fill="#B8C5FF"/></svg></span>分类</a>
+      <a class="tab-item" href="03-order-list.html"><span class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".5"/><rect x="7" y="11" width="8" height="2" rx="1" fill="#E93323" opacity=".5"/><rect x="7" y="15" width="6" height="2" rx="1" fill="#E93323" opacity=".5"/><circle cx="19" cy="18" r="4" fill="#E93323"/><path d="M17.5 18l1 1 2-2" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg></span>订单</a>
+      <a class="tab-item" href="04-profile.html"><span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5" fill="#FFB5A7"/><ellipse cx="12" cy="22" rx="9" ry="6" fill="#FFB5A7"/><circle cx="10" cy="7" r="1" fill="#333"/><circle cx="14" cy="7" r="1" fill="#333"/><path d="M9.5 10.5Q12 13 14.5 10.5" stroke="#333" stroke-width="0.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="14" r="1.5" fill="#FF9A9E"/></svg></span>我的</a>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+
+// ====== 分类数据：每个一级分类下挂二级分类和课程 ======
+var categoryData = [
+  { // 0 - 全部课程
+    name:'全部课程',
+    subs:['全部','热门推荐','新课上架','限时优惠','精选好课'],
+    courses:[
+      {name:'一级消防工程师全科取证班',price:2999,oriPrice:3999,gradient:'#DC2626,#991B1B',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg>',tag:'消防工程师',sub:0},
+      {name:'二级建造师全科通关班',price:1880,oriPrice:2580,gradient:'#2563EB,#1E40AF',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="5" width="18" height="17" rx="2" fill="#B8C5FF"/><rect x="6" y="7" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="7" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="6" y="14" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="14" width="5" height="5" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'建造师',sub:0},
+      {name:'初级会计职称精品班',price:1280,oriPrice:1680,gradient:'#7C3AED,#5B21B6',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="16" width="5" height="6" rx="1" fill="#FF6B35"/><rect x="9.5" y="12" width="5" height="10" rx="1" fill="#FECF6A"/><rect x="17" y="6" width="5" height="16" rx="1" fill="#A1E8CC"/></svg>',tag:'会计职称',sub:0},
+      {name:'考研英语全程提升班',price:998,oriPrice:1480,gradient:'#059669,#047857',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/><line x1="12" y1="11" x2="12" y2="15" stroke="#fff" stroke-width="1" opacity=".4"/><line x1="8" y1="13" x2="16" y2="13" stroke="#fff" stroke-width="1" opacity=".4"/></svg>',tag:'考研英语',sub:0},
+      {name:'教师资格证笔试全程班',price:680,oriPrice:980,gradient:'#D97706,#B45309',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><polygon points="2,10 12,4 22,10 12,16" fill="#A1E8CC"/><rect x="6" y="10" width="4" height="8" rx="1" fill="#FF9A9E"/><rect x="14" y="10" width="4" height="8" rx="1" fill="#FF9A9E"/><rect x="8" y="14" width="8" height="8" rx="2" fill="#B8C5FF"/></svg>',tag:'教师资格',sub:0},
+      {name:'国考笔试精品课',price:2680,oriPrice:3580,gradient:'#0D9488,#0F766E',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="8" width="20" height="14" rx="2" fill="#B8C5FF"/><polygon points="4,8 12,1 20,8" fill="#FFD6A5"/><rect x="9" y="12" width="2" height="6" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="12" width="2" height="6" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'公务员',sub:0}
+    ]
+  },
+  { // 1 - 消防工程师
+    name:'消防工程师',
+    subs:['全部','一级消防','二级消防','技术实务','综合能力','案例分析'],
+    courses:[
+      {name:'一级消防工程师全科取证班',price:2999,oriPrice:3999,gradient:'#DC2626,#991B1B',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 1c-1.5 0-3 1-4 3-1 2-2 4-2.5 5.5C4 13 3 18 3 18c0 2 1 4 4 4h10c3 0 4-2 4-4 0 0-1-5-2.5-8.5C18 8 17 6 16 4c-1-2-2.5-3-4-3z" fill="#FF6B35"/><path d="M8 18c.5 3 1.5 5 4 5s3.5-2 4-5" fill="#FECF6A"/></svg>',tag:'精讲班',sub:0},
+      {name:'消防安全技术实务精讲',price:1080,oriPrice:1480,gradient:'#B91C1C,#7F1D1D',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><polygon points="3,21 21,21 3,3" fill="none" stroke="#FF6B35" stroke-width="2"/><line x1="9" y1="15" x2="8" y2="16" stroke="#FF6B35" stroke-width="1"/></svg>',tag:'基础班',sub:2},
+      {name:'消防安全综合能力突破',price:980,oriPrice:1380,gradient:'#C2410C,#9A3412',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="11" width="8" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="15" width="6" height="2" rx="1" fill="#E93323" opacity=".4"/></svg>',tag:'突破班',sub:3},
+      {name:'消防安全案例分析实战',price:1280,oriPrice:1680,gradient:'#EA580C,#C2410C',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><rect x="7" y="5" width="10" height="2" rx="1" fill="#E93323" opacity=".3"/><polygon points="17,7 20,10 14,16 11,16 11,13" fill="#FECF6A"/></svg>',tag:'实战班',sub:4}
+    ]
+  },
+  { // 2 - 建造师
+    name:'建造师',
+    subs:['全部','一级建造师','二级建造师','市政工程','建筑工程','机电工程'],
+    courses:[
+      {name:'二级建造师全科通关班',price:1880,oriPrice:2580,gradient:'#2563EB,#1E40AF',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="5" width="18" height="17" rx="2" fill="#B8C5FF"/><rect x="6" y="7" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="7" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="6" y="14" width="5" height="5" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="14" width="5" height="5" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'通关班',sub:0},
+      {name:'一级建造师法规精讲',price:1280,oriPrice:1680,gradient:'#1D4ED8,#1E3A8A',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/><line x1="12" y1="11" x2="12" y2="15" stroke="#fff" stroke-width="1" opacity=".4"/><line x1="8" y1="13" x2="16" y2="13" stroke="#fff" stroke-width="1" opacity=".4"/></svg>',tag:'精讲班',sub:1},
+      {name:'市政工程管理与实务',price:1580,oriPrice:2180,gradient:'#0891B2,#155E75',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><path d="M2 12h20" stroke="#FF9A9E" stroke-width="3" stroke-dasharray="4 3"/><path d="M2 3h20M2 21h20" stroke="#999" stroke-width="1"/></svg>',tag:'专业课',sub:3},
+      {name:'建筑工程管理与实务',price:1480,oriPrice:1980,gradient:'#0E7490,#164E63',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="1" width="16" height="22" rx="1" fill="#B8C5FF"/><rect x="7" y="4" width="4" height="4" rx="0.5" fill="#fff" opacity=".5"/><rect x="13" y="4" width="4" height="4" rx="0.5" fill="#fff" opacity=".5"/><rect x="9" y="16" width="6" height="7" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'专业课',sub:4}
+    ]
+  },
+  { // 3 - 会计职称
+    name:'会计职称',
+    subs:['全部','初级会计','中级会计','高级会计','注册会计师','实操训练'],
+    courses:[
+      {name:'初级会计职称精品班',price:1280,oriPrice:1680,gradient:'#7C3AED,#5B21B6',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="16" width="5" height="6" rx="1" fill="#FF6B35"/><rect x="9.5" y="12" width="5" height="10" rx="1" fill="#FECF6A"/><rect x="17" y="6" width="5" height="16" rx="1" fill="#A1E8CC"/></svg>',tag:'精品班',sub:0},
+      {name:'初级会计实务通关',price:680,oriPrice:880,gradient:'#8B5CF6,#6D28D9',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FF9A9E"/><rect x="6" y="5" width="12" height="3" rx="1" fill="#fff" opacity=".5"/><circle cx="7" cy="10" r="1.5" fill="#fff" opacity=".5"/><circle cx="12" cy="10" r="1.5" fill="#fff" opacity=".5"/><circle cx="17" cy="10" r="1.5" fill="#fff" opacity=".5"/><circle cx="7" cy="14" r="1.5" fill="#fff" opacity=".5"/><circle cx="12" cy="14" r="1.5" fill="#fff" opacity=".5"/><circle cx="17" cy="14" r="1.5" fill="#fff" opacity=".5"/><circle cx="7" cy="18" r="1.5" fill="#fff" opacity=".5"/><circle cx="12" cy="18" r="1.5" fill="#fff" opacity=".5"/><circle cx="17" cy="18" r="1.5" fill="#fff" opacity=".5"/></svg>',tag:'实务班',sub:1},
+      {name:'中级财务会计专题',price:1880,oriPrice:2580,gradient:'#A855F7,#7C3AED',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="7" width="18" height="14" rx="3" fill="#B8C5FF"/><rect x="8" y="2" width="8" height="7" rx="2" fill="#FFD6A5"/><rect x="10" y="11" width="4" height="2" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'专题班',sub:2},
+      {name:'注册会计师全科班',price:4980,oriPrice:6800,gradient:'#C084FC,#A855F7',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><path d="M6 3h12v2c0 3.3-2.7 6-6 6S6 8.3 6 5V3z" fill="#FECF6A"/><rect x="8" y="11" width="8" height="10" rx="1" fill="#FECF6A"/><circle cx="6" cy="17" r="2" fill="#FECF6A"/><circle cx="18" cy="17" r="2" fill="#FECF6A"/></svg>',tag:'全科班',sub:4}
+    ]
+  },
+  { // 4 - 考研专区
+    name:'考研专区',
+    subs:['全部','考研英语','考研政治','考研数学','专业课','复试面试'],
+    courses:[
+      {name:'考研英语全程提升班',price:998,oriPrice:1480,gradient:'#059669,#047857',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/><line x1="12" y1="11" x2="12" y2="15" stroke="#fff" stroke-width="1" opacity=".4"/><line x1="8" y1="13" x2="16" y2="13" stroke="#fff" stroke-width="1" opacity=".4"/></svg>',tag:'英语',sub:0},
+      {name:'考研政治冲刺押题',price:680,oriPrice:880,gradient:'#10B981,#059669',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="3" width="20" height="14" rx="2" fill="#FF6B35"/><polygon points="12,5 13.5,9 18,9 14.5,11.5 16,16 12,13 8,16 9.5,11.5 6,9 10.5,9" fill="#FECF6A"/></svg>',tag:'政治',sub:1},
+      {name:'考研数学基础强化',price:1280,oriPrice:1680,gradient:'#34D399,#10B981',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="2" width="9" height="9" rx="2" fill="#FF9A9E"/><text x="6.5" y="9" font-size="7" fill="#fff" font-weight="bold" text-anchor="middle">123</text><rect x="13" y="13" width="9" height="9" rx="2" fill="#A1E8CC"/><text x="17.5" y="20" font-size="7" fill="#fff" font-weight="bold" text-anchor="middle">+−</text></svg>',tag:'数学',sub:2},
+      {name:'考研管理学专业课',price:1580,oriPrice:2180,gradient:'#6EE7B7,#34D399',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="7" y="7" width="10" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="11" width="8" height="2" rx="1" fill="#E93323" opacity=".4"/><rect x="7" y="15" width="6" height="2" rx="1" fill="#E93323" opacity=".4"/></svg>',tag:'专业课',sub:3}
+    ]
+  },
+  { // 5 - 教师资格
+    name:'教师资格',
+    subs:['全部','幼儿园','小学','初中','高中','面试指导'],
+    courses:[
+      {name:'教师资格证笔试全程班',price:680,oriPrice:980,gradient:'#D97706,#B45309',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><polygon points="2,10 12,4 22,10 12,16" fill="#A1E8CC"/><rect x="6" y="10" width="4" height="8" rx="1" fill="#FF9A9E"/><rect x="14" y="10" width="4" height="8" rx="1" fill="#FF9A9E"/><rect x="8" y="14" width="8" height="8" rx="2" fill="#B8C5FF"/></svg>',tag:'笔试班',sub:0},
+      {name:'小学教师资格通关课',price:580,oriPrice:780,gradient:'#F59E0B,#D97706',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="6" width="18" height="16" rx="1" fill="#FFD6A5"/><rect x="7" y="9" width="4" height="4" rx="0.5" fill="#FF6B35" opacity=".3"/><rect x="13" y="9" width="4" height="4" rx="0.5" fill="#FF6B35" opacity=".3"/><rect x="9" y="14" width="2" height="8" rx="1" fill="#FF6B35"/><rect x="13" y="14" width="2" height="8" rx="1" fill="#FF6B35"/></svg>',tag:'通关课',sub:2},
+      {name:'中学教师资格专项',price:780,oriPrice:1080,gradient:'#FBBF24,#F59E0B',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FF9A9E"/><rect x="7" y="4" width="10" height="5" rx="1" fill="#fff" opacity=".4"/><line x1="12" y1="11" x2="12" y2="15" stroke="#fff" stroke-width="1" opacity=".4"/><line x1="8" y1="13" x2="16" y2="13" stroke="#fff" stroke-width="1" opacity=".4"/></svg>',tag:'专项班',sub:3},
+      {name:'教师资格面试特训',price:480,oriPrice:680,gradient:'#FCD34D,#FBBF24',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="9" y="1" width="6" height="12" rx="3" fill="#FF9A9E"/><path d="M6 11c0 3.3 2.7 6 6 6s6-2.7 6-6" stroke="#FF6B35" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="23" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/></svg>',tag:'面试班',sub:5}
+    ]
+  },
+  { // 6 - 公务员
+    name:'公务员',
+    subs:['全部','国考','省考','行测','申论','面试'],
+    courses:[
+      {name:'国考笔试精品课',price:2680,oriPrice:3580,gradient:'#0D9488,#0F766E',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="8" width="20" height="14" rx="2" fill="#B8C5FF"/><polygon points="4,8 12,1 20,8" fill="#FFD6A5"/><rect x="9" y="12" width="2" height="6" rx="1" fill="#fff" opacity=".5"/><rect x="13" y="12" width="2" height="6" rx="1" fill="#fff" opacity=".5"/></svg>',tag:'精品课',sub:0},
+      {name:'行测专项突破训练',price:980,oriPrice:1280,gradient:'#14B8A6,#0D9488',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="2" y="16" width="5" height="6" rx="1" fill="#FF6B35"/><rect x="9.5" y="12" width="5" height="10" rx="1" fill="#FECF6A"/><rect x="17" y="6" width="5" height="16" rx="1" fill="#A1E8CC"/></svg>',tag:'专项班',sub:3},
+      {name:'申论写作高分技巧',price:880,oriPrice:1180,gradient:'#2DD4BF,#14B8A6',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="4" width="14" height="18" rx="2" fill="#FFD6A5"/><polygon points="17,6 20,9 15,14 12,14 12,11" fill="#FF6B35"/></svg>',tag:'技巧班',sub:4},
+      {name:'公务员面试全真模拟',price:1580,oriPrice:1980,gradient:'#5EEAD4,#2DD4BF',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="8" r="5" fill="#FFB5A7"/><path d="M6 14c2 3 5 4 12 0" stroke="#FF9A9E" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',tag:'模拟班',sub:5}
+    ]
+  },
+  { // 7 - 司法考试
+    name:'司法考试',
+    subs:['全部','客观题','主观题','民法','刑法','诉讼法'],
+    courses:[
+      {name:'法考客观题全程班',price:2980,oriPrice:3980,gradient:'#4F46E5,#3730A3',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><line x1="12" y1="1" x2="12" y2="6" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/><polygon points="9,6 15,6 12,3" fill="#FF6B35"/><path d="M3 12L6 6h12l3 6" fill="none" stroke="#B8C5FF" stroke-width="2"/><rect x="2" y="11" width="8" height="2" rx="1" fill="#B8C5FF"/><rect x="14" y="11" width="8" height="2" rx="1" fill="#B8C5FF"/></svg>',tag:'全程班',sub:0},
+      {name:'民法考点精讲',price:1080,oriPrice:1480,gradient:'#6366F1,#4F46E5',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><circle cx="4" cy="6" r="2" fill="#FF6B35" opacity=".3"/><circle cx="4" cy="18" r="2" fill="#FF6B35" opacity=".3"/><line x1="8" y1="6" x2="20" y2="6" stroke="#333" stroke-width="0.5" opacity=".3"/><line x1="8" y1="9" x2="18" y2="9" stroke="#333" stroke-width="0.5" opacity=".3"/><line x1="8" y1="12" x2="16" y2="12" stroke="#333" stroke-width="0.5" opacity=".3"/></svg>',tag:'精讲',sub:3},
+      {name:'刑法实务突破',price:980,oriPrice:1380,gradient:'#818CF8,#6366F1',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="5" y="10" width="14" height="12" rx="3" fill="#FF9A9E"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#FF9A9E" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="12" cy="17" r="1.5" fill="#fff"/></svg>',tag:'突破班',sub:4},
+      {name:'法考主观题特训',price:1680,oriPrice:2280,gradient:'#A5B4FC,#818CF8',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><rect x="7" y="5" width="10" height="2" rx="1" fill="#E93323" opacity=".3"/><polygon points="17,7 20,10 14,16 11,16 11,13" fill="#FECF6A"/></svg>',tag:'特训班',sub:2}
+    ]
+  },
+  { // 8 - 医药健康
+    name:'医药健康',
+    subs:['全部','执业医师','执业药师','护士资格','健康管理','中医专长'],
+    courses:[
+      {name:'执业医师全程通关班',price:3980,oriPrice:5280,gradient:'#DB2777,#9D174D',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><path d="M16 2v6c0 3.3-2.7 6-6 6" stroke="#FF9A9E" stroke-width="2" fill="none"/><circle cx="10" cy="16" r="4" fill="none" stroke="#FF6B35" stroke-width="2"/><circle cx="18" cy="6" r="2" fill="#FFD6A5"/></svg>',tag:'通关班',sub:0},
+      {name:'执业药师资格考试班',price:2280,oriPrice:2980,gradient:'#EC4899,#DB2777',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="3" y="10" width="18" height="8" rx="4" fill="#FF9A9E" transform="rotate(-30 12 14)"/><rect x="12" y="7" width="4" height="2" rx="1" fill="#FF9A9E"/></svg>',tag:'考试班',sub:2},
+      {name:'护士资格证全科班',price:1680,oriPrice:2180,gradient:'#F472B6,#EC4899',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><rect x="10" y="1" width="4" height="20" rx="1" fill="#B8C5FF"/><polygon points="12,0 9,2 15,2" fill="#FF6B35"/><rect x="9" y="17" width="6" height="3" rx="0.5" fill="#FFD6A5"/></svg>',tag:'全科班',sub:3},
+      {name:'健康管理师培训班',price:2980,oriPrice:3980,gradient:'#F9A8D4,#F472B6',icon:'<svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="16" r="6" fill="#FF6B35"/><path d="M10 4c1-2 3-2 4 0" stroke="#A1E8CC" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="6" rx="2" ry="3" fill="#A1E8CC"/></svg>',tag:'培训',sub:4}
+    ]
+  }
+];
+
+var currentPrimary = 0;
+var currentSub = 0;
+
+function renderSubCats(primaryIndex) {
+  var cat = categoryData[primaryIndex];
+  var html = '';
+  cat.subs.forEach(function(sub, i) {
+    html += '<span class="sub-cat-tag' + (i === 0 ? ' active' : '') + '" data-sub="' + i + '" onclick="switchSub(this, ' + i + ')">' + sub + '</span>';
+  });
+  document.getElementById('subCatScroll').innerHTML = html;
+}
+
+function renderCourses(primaryIndex, subIndex) {
+  var cat = categoryData[primaryIndex];
+  var courses = cat.courses;
+  // 全部课程一级分类不按二级筛选，其他按二级标签索引筛选
+  if (primaryIndex !== 0 && subIndex > 0) {
+    courses = courses.filter(function(c) { return c.sub === subIndex; });
+  }
+  if (courses.length === 0) {
+    document.getElementById('courseGrid').innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" width="48" height="48"><rect x="2" y="6" width="20" height="14" rx="3" fill="#B8C5FF" opacity=".5"/><path d="M2 7L12 14l10-7" stroke="#B8C5FF" stroke-width="1.5" fill="none"/></svg></div><div class="empty-state-text">暂无相关课程</div></div>';
+    return;
+  }
+  var html = '';
+  courses.forEach(function(c) {
+    html += '<div class="course-card" onclick="navigateTo(\'05-course-detail.html\')">'
+      + '<div class="course-img" style="background:linear-gradient(135deg,' + c.gradient + ');">'
+      + '<div class="course-img-inner"><span class="course-img-icon">' + c.icon + '</span><span class="course-img-tag">' + c.tag + '</span></div></div>'
+      + '<div class="course-info"><div class="course-name">' + c.name + '</div>'
+      + '<div class="course-price">&yen;' + c.price.toFixed(2) + '<span class="original">&yen;' + c.oriPrice.toFixed(2) + '</span></div>'
+      + '</div></div>';
+  });
+  document.getElementById('courseGrid').innerHTML = html;
+}
+
+function switchPrimary(el, index) {
+  document.querySelectorAll('.left-item').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+  currentPrimary = index;
+  currentSub = 0;
+  renderSubCats(index);
+  renderCourses(index, 0);
+}
+
+function switchSub(el, index) {
+  document.querySelectorAll('.sub-cat-tag').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+  currentSub = index;
+  renderCourses(currentPrimary, index);
+}
+
+// 初始化
+renderSubCats(0);
+renderCourses(0, 0);
+</script>
+</body>
+</html>
