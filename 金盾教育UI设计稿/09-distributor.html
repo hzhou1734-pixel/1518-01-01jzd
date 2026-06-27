@@ -37,8 +37,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
 .level-tag { position:absolute; bottom:-4px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#FFD700,#FFA000); color:#7B3F00; font-size:9px; font-weight:700; padding:2px 10px; border-radius:10px; white-space:nowrap; box-shadow:0 2px 6px rgba(255,160,0,0.4); }
 .profile-info { flex:1; position:relative; z-index:1; }
 .profile-name { font-size:17px; font-weight:700; letter-spacing:0.5px; }
-.profile-superior { font-size:11px; opacity:0.75; margin-top:4px; display:flex; align-items:center; gap:4px; }
-.profile-superior .dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.5); }
 .profile-qr { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; position:relative; z-index:1; }
 .profile-qr:active { opacity:0.7; }
 .profile-qr svg { width:20px; height:20px; fill:#fff; }
@@ -217,7 +215,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
           </div>
           <div class="profile-info">
             <div class="profile-name">张推广</div>
-            <div class="profile-superior"><span class="dot"></span>上级：李经理 · ID 10086</div>
           </div>
           <div class="profile-qr" onclick="showPromo()">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="16" y="16" width="4" height="4" rx="1" fill="currentColor"/></svg>
