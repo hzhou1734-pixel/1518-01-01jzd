@@ -7,85 +7,560 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+
+/* ===== 框架 ===== */
 .phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
 .phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
 .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
 .home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
-.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:12px; }
 .scroll-content::-webkit-scrollbar { width:0; }
-.nav-bar { background:linear-gradient(135deg,#E93323,#FF6B35); color:#fff; padding:10px 14px; font-size:15px; font-weight:600; display:flex; align-items:center; gap:10px; flex-shrink:0; min-height:44px; }
-.nav-back { cursor:pointer; color:#fff; text-decoration:none; }
-.profile-card { background:linear-gradient(135deg,#E93323,#FF6B35); padding:0 16px 20px; color:#fff; }
-.profile-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-.avatar { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-.profile-name { font-size:14px; font-weight:600; }
-.profile-level { font-size:11px; opacity:0.8; }
-.profile-level .badge { display:inline-block; background:rgba(255,215,0,0.3); padding:1px 8px; border-radius:8px; color:#FFD700; }
-.commission-board { display:flex; background:rgba(255,255,255,0.15); border-radius:10px; padding:14px 8px; backdrop-filter:blur(4px); }
-.comm-item { flex:1; text-align:center; border-right:0.5px solid rgba(255,255,255,0.2); }
-.comm-item:last-child { border-right:none; }
-.comm-amount { font-size:18px; font-weight:700; }
-.comm-label { font-size:10px; opacity:0.8; margin-top:4px; }
-.section { background:#fff; margin-top:8px; }
-.withdraw-row { padding:14px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
-.withdraw-row:active { background:#FAFAFA; }
-.withdraw-label { font-size:14px; font-weight:600; color:#E93323; }
-.withdraw-amount { font-size:12px; color:#E93323; font-weight:600; }
-.menu-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:0.5px solid #F5F5F5; cursor:pointer; transition:background .15s; }
+
+/* ===== 状态栏 & 导航 ===== */
+.header-group { background:linear-gradient(135deg,#D82A1E,#E93323 30%,#FF6B35); flex-shrink:0; position:relative; }
+.status-bar { height:54px; background:transparent; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px 10px; font-size:12px; font-weight:600; color:#fff; position:relative; }
+.status-bar::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); pointer-events:none; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+.nav-bar { background:transparent; color:#fff; padding:0 14px; font-size:16px; font-weight:600; display:flex; align-items:center; gap:10px; height:44px; position:relative; box-shadow:0 2px 12px rgba(233,51,35,0.15); }
+.nav-bar::before { content:''; position:absolute; top:0; right:20px; width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
+.nav-back { cursor:pointer; color:#fff; font-size:18px; text-decoration:none; line-height:1; }
+.nav-bar .nav-title { flex:1; text-align:center; font-size:16px; font-weight:600; color:#fff; padding-right:40px; }
+
+/* ===== 个人卡片 ===== */
+.profile-card { background:linear-gradient(160deg,#E93323 0%,#FF6B35 60%,#FFA06B 100%); margin:0 12px; border-radius:16px; padding:20px 18px 16px; color:#fff; position:relative; overflow:hidden; margin-top:-8px; box-shadow:0 8px 24px rgba(233,51,35,0.3); }
+.profile-card::before { content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.06); pointer-events:none; }
+.profile-card::after { content:''; position:absolute; bottom:-20px; left:-20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
+.profile-top { display:flex; align-items:center; gap:12px; position:relative; z-index:1; margin-bottom:18px; }
+.avatar-wrap { position:relative; flex-shrink:0; }
+.avatar { width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.15); border:2.5px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.avatar svg { width:46px; height:46px; display:block; }
+.level-tag { position:absolute; bottom:-4px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#FFD700,#FFA000); color:#7B3F00; font-size:9px; font-weight:700; padding:2px 10px; border-radius:10px; white-space:nowrap; box-shadow:0 2px 6px rgba(255,160,0,0.4); }
+.profile-info { flex:1; position:relative; z-index:1; }
+.profile-name { font-size:17px; font-weight:700; letter-spacing:0.5px; }
+.profile-superior { font-size:11px; opacity:0.75; margin-top:4px; display:flex; align-items:center; gap:4px; }
+.profile-superior .dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.5); }
+.profile-qr { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; position:relative; z-index:1; }
+.profile-qr:active { opacity:0.7; }
+.profile-qr svg { width:20px; height:20px; fill:#fff; }
+
+/* ===== 佣金统计卡片组 ===== */
+.stats-row { display:flex; gap:8px; position:relative; z-index:1; }
+.stat-card { flex:1; background:rgba(255,255,255,0.13); backdrop-filter:blur(8px); border-radius:12px; padding:12px 8px; text-align:center; border:1px solid rgba(255,255,255,0.1); transition:transform .15s; cursor:pointer; }
+.stat-card:active { transform:scale(0.96); }
+.stat-amount { font-size:18px; font-weight:700; letter-spacing:0.5px; }
+.stat-amount.avail { color:#FFD700; }
+.stat-amount.frozen { color:rgba(255,255,255,0.7); }
+.stat-label { font-size:10px; opacity:0.7; margin-top:3px; }
+.stat-icon { margin-bottom:4px; }
+.stat-icon svg { width:18px; height:18px; display:block; margin:0 auto; }
+
+/* ===== 本月业绩 ===== */
+.monthly-card { background:#fff; margin:14px 12px 0; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+.monthly-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.monthly-title { font-size:14px; font-weight:600; color:#1F2937; display:flex; align-items:center; gap:6px; }
+.monthly-title .icon-dot { width:6px; height:6px; border-radius:50%; background:#E93323; }
+.monthly-date { font-size:11px; color:#999; }
+.monthly-metrics { display:flex; gap:8px; }
+.metric-item { flex:1; background:#FFF8F5; border-radius:10px; padding:12px 10px; text-align:center; }
+.metric-value { font-size:20px; font-weight:700; color:#E93323; }
+.metric-unit { font-size:11px; font-weight:500; }
+.metric-label { font-size:10px; color:#999; margin-top:4px; }
+/* ===== 快捷入口 ===== */
+.quick-section { margin:14px 12px 0; }
+.quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.quick-item { background:#fff; border-radius:14px; padding:16px 6px; text-align:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.03); transition:all .15s; }
+.quick-item:active { transform:scale(0.95); background:#FAFAFA; }
+.quick-icon { width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; }
+.quick-icon.wallet { background:linear-gradient(135deg,#FFF0ED,#FFE0D8); }
+.quick-icon.team { background:linear-gradient(135deg,#F0F4FF,#D8E4FF); }
+.quick-icon.poster { background:linear-gradient(135deg,#FFF8EC,#FFE8C8); }
+.quick-icon.chart { background:linear-gradient(135deg,#EDFAF4,#C8F0DC); }
+.quick-icon svg { width:22px; height:22px; display:block; }
+.quick-label { font-size:11px; color:#444; font-weight:500; }
+.quick-badge { position:relative; }
+.quick-badge::after { content:attr(data-count); position:absolute; top:-4px; right:8px; background:#E93323; color:#fff; font-size:9px; font-weight:600; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 4px; box-shadow:0 2px 4px rgba(233,51,35,0.3); }
+
+/* ===== 功能菜单 ===== */
+.menu-section { background:#fff; margin:14px 12px 0; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
+.menu-item { display:flex; align-items:center; padding:15px 16px; cursor:pointer; transition:background .15s; border-bottom:0.5px solid #F3F3F3; }
 .menu-item:active { background:#FAFAFA; }
 .menu-item:last-child { border-bottom:none; }
-.menu-icon { margin-right:8px; font-size:16px; }
-.menu-label { font-size:13px; color:#333; }
-.menu-value { font-size:12px; color:#B0B0B0; }
-.earnings-section { background:#fff; margin-top:8px; padding:14px 16px; }
-.earnings-title { font-size:14px; font-weight:600; color:#333; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
-.earnings-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:0.5px solid #F5F5F5; font-size:11px; align-items:center; }
-.earnings-item:last-child { border-bottom:none; }
-.earnings-desc { color:#666; display:flex; align-items:center; gap:4px; }
-.earnings-tag { background:#E8F5E9; color:#2E7D32; font-size:9px; padding:1px 6px; border-radius:4px; }
-.earnings-amount { color:#E93323; font-weight:600; }
-.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.menu-item-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:12px; }
+.menu-item-icon.orange { background:#FFF5ED; }
+.menu-item-icon.blue { background:#F0F5FF; }
+.menu-item-icon.green { background:#EDFAF4; }
+.menu-item-icon.purple { background:#F8F0FF; }
+.menu-item-icon svg { width:20px; height:20px; display:block; }
+.menu-item-body { flex:1; min-width:0; }
+.menu-item-title { font-size:14px; color:#1F2937; font-weight:500; }
+.menu-item-desc { font-size:10px; color:#B0B0B0; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.menu-item-arrow { color:#C0C0C0; font-size:14px; flex-shrink:0; }
+
+/* ===== 近期收益 ===== */
+.earnings-section { background:#fff; margin:14px 12px 0; border-radius:14px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
+.earnings-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.earnings-title { font-size:14px; font-weight:600; color:#1F2937; display:flex; align-items:center; gap:6px; }
+.earnings-title .icon-dot { width:6px; height:6px; border-radius:50%; background:#FF6B35; }
+.earnings-all { font-size:11px; color:#E93323; cursor:pointer; text-decoration:none; font-weight:500; }
+.earning-item { display:flex; align-items:center; padding:10px 0; }
+.earning-item:not(:last-child) { border-bottom:0.5px solid #F8F8F8; }
+.earning-tag { font-size:9px; font-weight:600; padding:2px 8px; border-radius:4px; flex-shrink:0; margin-right:10px; }
+.earning-tag.course { background:#FFF0ED; color:#E93323; }
+.earning-tag.invite { background:#F0F4FF; color:#4A7CFF; }
+.earning-tag.bonus { background:#FFF8EC; color:#E8A020; }
+.earning-info { flex:1; min-width:0; }
+.earning-title { font-size:12px; color:#444; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.earning-time { font-size:10px; color:#B8B8B8; margin-top:2px; }
+.earning-amount { font-size:14px; font-weight:600; color:#E93323; flex-shrink:0; margin-left:10px; }
+
+/* ===== 底部安全区 ===== */
+.safe-bottom { height:24px; }
+
+/* ===== Toast ===== */
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.78); color:#fff; padding:12px 28px; border-radius:10px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .25s; }
 .toast.show { opacity:1; }
+
+/* 推广码弹窗 */
+.promo-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s; }
+.promo-overlay.show { opacity:1; pointer-events:auto; }
+.promo-dialog { width:300px; background:#fff; border-radius:16px; overflow:hidden; transform:scale(0.9); transition:transform .25s cubic-bezier(0.32, 0.72, 0, 1); }
+.promo-overlay.show .promo-dialog { transform:scale(1); }
+.promo-dialog-header { background:linear-gradient(135deg,#D82A1E,#E93323 30%,#FF6B35); padding:20px; text-align:center; position:relative; }
+.promo-dialog-close { position:absolute; top:12px; right:14px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:#fff; }
+.promo-dialog-title { font-size:17px; font-weight:600; color:#fff; }
+.promo-dialog-sub { font-size:11px; color:rgba(255,255,255,0.75); margin-top:3px; }
+.promo-dialog-body { padding:24px 28px; text-align:center; }
+.promo-qr-wrap { width:170px; height:170px; margin:0 auto 16px; padding:8px; background:#fff; border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,0.08); }
+.promo-code-text { font-size:18px; font-weight:700; color:#333; letter-spacing:2px; margin-bottom:4px; }
+.promo-code-label { font-size:11px; color:#999; }
+.promo-dialog-footer { display:flex; border-top:0.5px solid #F0F0F0; }
+.promo-btn { flex:1; padding:14px; font-size:15px; text-align:center; cursor:pointer; border:none; background:none; font-family:inherit; }
+.promo-btn.cancel { color:#999; border-right:0.5px solid #F0F0F0; }
+.promo-btn.action { color:#E93323; font-weight:600; }
+.promo-btn:active { background:#F5F5F5; }
+
+/* 推广海报弹窗 */
+.poster-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.65); z-index:300; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; padding:20px; }
+.poster-overlay.show { opacity:1; pointer-events:auto; }
+.poster-dialog { width:335px; max-height:90%; background:#fff; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; transform:scale(0.9); transition:transform .3s cubic-bezier(0.32, 0.72, 0, 1); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.poster-overlay.show .poster-dialog { transform:scale(1); }
+
+/* 海报图部分 */
+.poster-image-wrap { position:relative; width:100%; background:linear-gradient(160deg,#E93323 0%,#FF6B35 60%,#FFA06B 100%); padding:24px 20px 20px; overflow:hidden; }
+.poster-image-wrap::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.08); pointer-events:none; }
+.poster-image-wrap::after { content:''; position:absolute; bottom:-30px; left:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.06); pointer-events:none; }
+.poster-badge { display:inline-block; background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); color:#fff; font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.15); }
+.poster-title { font-size:22px; font-weight:800; color:#fff; line-height:1.3; margin-bottom:8px; text-shadow:0 2px 8px rgba(0,0,0,0.15); }
+.poster-sub { font-size:13px; color:rgba(255,255,255,0.85); margin-bottom:16px; }
+.poster-course-list { display:flex; flex-direction:column; gap:8px; }
+.poster-course-item { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.15); backdrop-filter:blur(4px); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); }
+.poster-course-icon { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.poster-course-icon svg { width:18px; height:18px; fill:#fff; }
+.poster-course-name { flex:1; font-size:13px; font-weight:600; color:#fff; }
+.poster-course-commission { font-size:14px; font-weight:700; color:#FFD700; }
+.poster-bottom-deco { display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.poster-bottom-deco span { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); }
+.poster-bottom-deco span:first-child { width:20px; border-radius:3px; background:rgba(255,255,255,0.5); }
+
+/* 用户信息+邀请码部分 */
+.poster-user-section { display:flex; align-items:center; padding:16px 20px; background:#fff; border-top:1px solid #F0F0F0; }
+.poster-user-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+.poster-user-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FF6B35,#FF9A9E); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; font-size:18px; font-weight:700; }
+.poster-user-name { font-size:14px; font-weight:600; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.poster-user-label { font-size:11px; color:#999; margin-top:2px; }
+.poster-invite-right { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; margin-left:12px; }
+.poster-invite-code { font-size:16px; font-weight:700; color:#E93323; letter-spacing:1px; font-family:'Courier New',monospace; }
+.poster-invite-label { font-size:10px; color:#999; }
+.poster-invite-qr { width:50px; height:50px; border-radius:6px; background:#F5F5F5; display:flex; align-items:center; justify-content:center; margin-top:4px; }
+.poster-invite-qr svg { width:40px; height:40px; }
+
+/* 弹窗底部按钮 */
+.poster-footer { display:flex; border-top:0.5px solid #F0F0F0; }
+.poster-footer-btn { flex:1; padding:14px; font-size:15px; text-align:center; cursor:pointer; border:none; background:none; font-family:inherit; }
+.poster-footer-btn.save { color:#E93323; font-weight:600; border-right:0.5px solid #F0F0F0; }
+.poster-footer-btn.share { color:#E93323; font-weight:600; }
+.poster-footer-btn:active { background:#F5F5F5; }
+
+/* 关闭按钮 */
+.poster-close-btn { position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10; color:#fff; font-size:16px; backdrop-filter:blur(4px); }
+.poster-close-btn:active { background:rgba(0,0,0,0.5); }
 </style>
 </head>
 <body>
 <div class="phone-frame">
   <div class="notch"></div>
   <div class="phone-screen">
-    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span> 推广员中心</div>
+    <!-- 头部组（统一渐变） -->
+    <div class="header-group">
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span class="status-time" style="font-size:12px;font-weight:600;">9:41</span>
+      <div class="status-icons">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#fff"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#fff"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#fff"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#fff"/></svg>
+        <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#fff"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#fff"/><circle cx="7.5" cy="9" r="1.5" fill="#fff"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#fff"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#fff"/></svg>
+      </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+      <span class="nav-back" onclick="goBack()">←</span>
+      <span class="nav-title">推广员中心</span>
+    </div>
+    </div><!-- .header-group -->
+
+    <!-- 滚动内容 -->
     <div class="scroll-content">
+
+      <!-- 个人信息卡片 -->
       <div class="profile-card">
-        <div class="profile-row"><div class="avatar"><svg viewBox="0 0 24 24"><polygon points="12,1 15,8 22,9 17,14 18,22 12,18 6,22 7,14 2,9 9,8" fill="#FECF6A"/><circle cx="12" cy="12" r="3" fill="#FF6B35"/></svg></div><div><div class="profile-name">张推广</div><div class="profile-level"><span class="badge">黄金推广员</span> · 上级：李经理</div></div></div>
-        <div class="commission-board">
-          <div class="comm-item"><div class="comm-amount">¥1,280</div><div class="comm-label">可提现佣金</div></div>
-          <div class="comm-item"><div class="comm-amount">¥5,680</div><div class="comm-label">累计佣金</div></div>
-          <div class="comm-item"><div class="comm-amount">¥320</div><div class="comm-label">待解冻</div></div>
+        <div class="profile-top">
+          <div class="avatar-wrap">
+            <div class="avatar">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="23" fill="rgba(255,255,255,0.12)"/>
+                <circle cx="24" cy="18" r="10" fill="rgba(255,255,255,0.6)"/>
+                <ellipse cx="24" cy="42" rx="18" ry="10" fill="rgba(255,255,255,0.4)"/>
+              </svg>
+            </div>
+            <div class="level-tag">黄金推广员</div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-name">张推广</div>
+            <div class="profile-superior"><span class="dot"></span>上级：李经理 · ID 10086</div>
+          </div>
+          <div class="profile-qr" onclick="showPromo()">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="16" y="16" width="4" height="4" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <!-- 佣金统计 -->
+        <div class="stats-row">
+          <div class="stat-card" onclick="navigateTo('27-withdrawal.html')">
+            <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.25)"/><text x="12" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#FFD700">¥</text></svg></div>
+            <div class="stat-amount avail">¥1,280</div>
+            <div class="stat-label">可提现佣金</div>
+          </div>
+          <div class="stat-card" onclick="navigateTo('30-income.html')">
+            <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.25)"/><polyline points="8,15 11,12 14,15 18,10" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="10" r="2" fill="#fff" opacity="0.5"/></svg></div>
+            <div class="stat-amount">¥5,680</div>
+            <div class="stat-label">累计佣金</div>
+          </div>
+          <div class="stat-card" onclick="navigateTo('30-income.html?filter=frozen')">
+            <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.25)"/><rect x="9" y="8" width="6" height="8" rx="1.5" stroke="#fff" stroke-width="1.5" fill="none"/><circle cx="11" cy="14.5" r="1" fill="#fff" opacity="0.8"/><circle cx="13" cy="14.5" r="1" fill="#fff" opacity="0.8"/></svg></div>
+            <div class="stat-amount frozen">¥320</div>
+            <div class="stat-label">待解冻</div>
+          </div>
         </div>
       </div>
-      <div class="section"><div class="withdraw-row" onclick="showToast('跳转提现页面')"><span class="withdraw-label"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><circle cx="12" cy="12" r="10" fill="#FECF6A"/><text x="12" y="16" font-size="10" fill="#333" font-weight="bold" text-anchor="middle">¥</text></svg> 佣金提现</span><span class="withdraw-amount">可提现 ¥1,280.00 ›</span></div></div>
-      <div class="section" style="margin-top:8px;">
-        <div class="menu-item" onclick="showToast('推广团队详情')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3" fill="#FFB5A7"/><circle cx="17" cy="7" r="3" fill="#FFB5A7"/><ellipse cx="13" cy="20" rx="9" ry="5" fill="#B8C5FF"/></svg></span>推广团队</span><span class="menu-value">一级12人 | 二级8人 ›</span></div>
-        <div class="menu-item" onclick="showToast('生成推广海报')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="3" fill="#FFD6A5"/><circle cx="10" cy="10" r="3" fill="#FECF6A"/><polygon points="5,21 10,14 14,18 20,8 22,12 22,21" fill="#A1E8CC" opacity=".5"/></svg></span>推广海报</span><span class="menu-value">保存至相册 ›</span></div>
-        <div class="menu-item" onclick="showToast('收益明细')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="2" y="16" width="5" height="6" rx="1" fill="#FF6B35"/><rect x="9.5" y="12" width="5" height="10" rx="1" fill="#FECF6A"/><rect x="17" y="6" width="5" height="16" rx="1" fill="#A1E8CC"/></svg></span>收益明细</span><span class="menu-value">查看全部 ›</span></div>
-        <div class="menu-item" onclick="showToast('提现记录')"><span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#FFD6A5"/><rect x="7" y="5" width="10" height="2" rx="1" fill="#E93323" opacity=".3"/><rect x="7" y="9" width="12" height="2" rx="1" fill="#E93323" opacity=".3"/><rect x="7" y="13" width="9" height="2" rx="1" fill="#E93323" opacity=".3"/></svg></span>提现记录</span><span class="menu-value">3笔记录 ›</span></div>
+
+      <!-- 本月业绩 -->
+      <div class="monthly-card">
+        <div class="monthly-header">
+          <div class="monthly-title"><span class="icon-dot"></span>本月业绩概览</div>
+          <div class="monthly-date">2026年6月</div>
+        </div>
+        <div class="monthly-metrics">
+          <div class="metric-item">
+            <div class="metric-value">12<span class="metric-unit">人</span></div>
+            <div class="metric-label">本月新增推广</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">48<span class="metric-unit">单</span></div>
+            <div class="metric-label">本月成单</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">¥3,240<span class="metric-unit"></span></div>
+            <div class="metric-label">本月佣金</div>
+          </div>
+        </div>
       </div>
+
+      <!-- 快捷入口 -->
+      <div class="quick-section">
+        <div class="quick-grid">
+          <div class="quick-item quick-badge" data-count="NEW" onclick="navigateTo('27-withdrawal.html')">
+            <div class="quick-icon wallet">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="3" fill="none" stroke="#E93323" stroke-width="1.8"/><rect x="8" y="10" width="8" height="5" rx="1.5" fill="#E93323" opacity="0.2"/></svg>
+            </div>
+            <div class="quick-label">佣金提现</div>
+          </div>
+          <div class="quick-item" onclick="navigateTo('28-team.html')">
+            <div class="quick-icon team">
+              <svg viewBox="0 0 24 24"><circle cx="8" cy="7" r="3" fill="none" stroke="#4A7CFF" stroke-width="1.6"/><circle cx="16" cy="7" r="3" fill="none" stroke="#4A7CFF" stroke-width="1.6"/><path d="M2,20 Q8,14 14,20" fill="none" stroke="#4A7CFF" stroke-width="1.6"/><path d="M10,20 Q16,14 22,20" fill="none" stroke="#4A7CFF" stroke-width="1.6"/></svg>
+            </div>
+            <div class="quick-label">推广团队</div>
+          </div>
+          <div class="quick-item" onclick="showPoster()">
+            <div class="quick-icon poster">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#E8A020" stroke-width="1.6"/><circle cx="9" cy="10" r="2.5" fill="none" stroke="#E8A020" stroke-width="1.4"/><path d="M3,21 L9,14 L14,18 L21,8" fill="none" stroke="#E8A020" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="quick-label">推广海报</div>
+          </div>
+          <div class="quick-item" onclick="navigateTo('30-income.html')">
+            <div class="quick-icon chart">
+              <svg viewBox="0 0 24 24"><rect x="3" y="14" width="4" height="7" rx="1" fill="none" stroke="#2E7D32" stroke-width="1.5"/><rect x="10" y="10" width="4" height="11" rx="1" fill="none" stroke="#2E7D32" stroke-width="1.5"/><rect x="17" y="5" width="4" height="16" rx="1" fill="none" stroke="#2E7D32" stroke-width="1.5"/></svg>
+            </div>
+            <div class="quick-label">收益明细</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 功能菜单 -->
+      <div class="menu-section">
+        <div class="menu-item" onclick="showPromo()">
+          <div class="menu-item-icon orange">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="#E93323" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="#E93323" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="#E93323" stroke-width="2"/><rect x="15" y="15" width="5" height="5" rx="1.2" fill="#E93323"/></svg>
+          </div>
+          <div class="menu-item-body">
+            <div class="menu-item-title">我的推广码</div>
+            <div class="menu-item-desc">分享专属二维码，快速邀请好友</div>
+          </div>
+          <span class="menu-item-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('提现记录')">
+          <div class="menu-item-icon blue">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#4A7CFF" stroke-width="2"/><line x1="7" y1="8" x2="17" y2="8" stroke="#4A7CFF" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="12" x2="17" y2="12" stroke="#4A7CFF" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="16" x2="13" y2="16" stroke="#4A7CFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="menu-item-body">
+            <div class="menu-item-title">提现记录</div>
+            <div class="menu-item-desc">近3笔提现已到账，查看详情</div>
+          </div>
+          <span class="menu-item-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('推广规则')">
+          <div class="menu-item-icon green">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#2E7D32" stroke-width="2"/><polyline points="8,12 11,15 16,9" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="menu-item-body">
+            <div class="menu-item-title">推广规则</div>
+            <div class="menu-item-desc">了解佣金比例、结算规则与权益</div>
+          </div>
+          <span class="menu-item-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="showToast('专属客服')">
+          <div class="menu-item-icon purple">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="#8B5CF6" stroke-width="2"/><path d="M4,20 Q8,15 12,15 Q16,15 20,20" fill="none" stroke="#8B5CF6" stroke-width="2"/></svg>
+          </div>
+          <div class="menu-item-body">
+            <div class="menu-item-title">专属客服</div>
+            <div class="menu-item-desc">一对一咨询，优先响应</div>
+          </div>
+          <span class="menu-item-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- 近期收益 -->
       <div class="earnings-section">
-        <div class="earnings-title"><svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle"><polyline points="2,18 8,12 12,15 18,6 22,10" stroke="#FF6B35" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="22" cy="10" r="2" fill="#FF6B35"/></svg> 近期收益</div>
-        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>一级消防工程师</span><span class="earnings-amount">+¥199.00</span></div>
-        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>二级建造师全科</span><span class="earnings-amount">+¥88.00</span></div>
-        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">课程</span>初级会计职称</span><span class="earnings-amount">+¥56.00</span></div>
-        <div class="earnings-item"><span class="earnings-desc"><span class="earnings-tag">下级</span>邀请推广员奖励</span><span class="earnings-amount">+¥30.00</span></div>
+        <div class="earnings-header">
+          <div class="earnings-title"><span class="icon-dot"></span>近期收益</div>
+          <a class="earnings-all" href="javascript:void(0)" onclick="showToast('查看全部收益')">查看全部 ›</a>
+        </div>
+        <div class="earning-item">
+          <span class="earning-tag course">课程</span>
+          <div class="earning-info">
+            <div class="earning-title">一级消防工程师 · 全科班</div>
+            <div class="earning-time">06-25 14:32</div>
+          </div>
+          <div class="earning-amount">+¥199.00</div>
+        </div>
+        <div class="earning-item">
+          <span class="earning-tag course">课程</span>
+          <div class="earning-info">
+            <div class="earning-title">二级建造师 · 全科班</div>
+            <div class="earning-time">06-24 10:15</div>
+          </div>
+          <div class="earning-amount">+¥88.00</div>
+        </div>
+        <div class="earning-item">
+          <span class="earning-tag course">课程</span>
+          <div class="earning-info">
+            <div class="earning-title">初级会计职称 · 精品班</div>
+            <div class="earning-time">06-23 16:48</div>
+          </div>
+          <div class="earning-amount">+¥56.00</div>
+        </div>
+        <div class="earning-item">
+          <span class="earning-tag invite">邀请</span>
+          <div class="earning-info">
+            <div class="earning-title">邀请推广员 · 王小明</div>
+            <div class="earning-time">06-22 09:20</div>
+          </div>
+          <div class="earning-amount">+¥30.00</div>
+        </div>
       </div>
-      <div style="height:16px;"></div>
+
+      <div class="safe-bottom"></div>
     </div>
   </div>
   <div class="home-indicator"></div>
+
+  <!-- 推广码弹窗 -->
+  <div class="promo-overlay" id="promoOverlay" onclick="closePromo()">
+    <div class="promo-dialog" onclick="event.stopPropagation()">
+      <div class="promo-dialog-header">
+        <div class="promo-dialog-close" onclick="closePromo()">✕</div>
+        <div class="promo-dialog-title">我的推广码</div>
+        <div class="promo-dialog-sub">分享给好友，一起赚佣金</div>
+      </div>
+      <div class="promo-dialog-body">
+        <div class="promo-qr-wrap">
+          <svg viewBox="0 0 170 170" width="100%" height="100%">
+            <!-- QR 外框 -->
+            <rect x="0" y="0" width="170" height="170" rx="6" fill="#fff"/>
+            <!-- 左上定位图案 -->
+            <rect x="12" y="12" width="40" height="40" rx="4" fill="none" stroke="#333" stroke-width="3"/>
+            <rect x="18" y="18" width="28" height="28" rx="2" fill="#333"/>
+            <rect x="25" y="25" width="14" height="14" rx="1" fill="#fff"/>
+            <!-- 右上定位图案 -->
+            <rect x="118" y="12" width="40" height="40" rx="4" fill="none" stroke="#333" stroke-width="3"/>
+            <rect x="124" y="18" width="28" height="28" rx="2" fill="#333"/>
+            <rect x="131" y="25" width="14" height="14" rx="1" fill="#fff"/>
+            <!-- 左下定位图案 -->
+            <rect x="12" y="118" width="40" height="40" rx="4" fill="none" stroke="#333" stroke-width="3"/>
+            <rect x="18" y="124" width="28" height="28" rx="2" fill="#333"/>
+            <rect x="25" y="131" width="14" height="14" rx="1" fill="#fff"/>
+            <!-- 中间数据区域 - 模拟QR码随机像素 -->
+            <rect x="58" y="14" width="6" height="6" rx="1" fill="#333"/><rect x="74" y="14" width="6" height="6" rx="1" fill="#333"/><rect x="90" y="14" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="66" y="22" width="6" height="6" rx="1" fill="#333"/><rect x="82" y="22" width="6" height="6" rx="1" fill="#333"/><rect x="98" y="22" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="58" y="30" width="6" height="6" rx="1" fill="#333"/><rect x="74" y="30" width="6" height="6" rx="1" fill="#333"/><rect x="90" y="30" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="66" y="38" width="6" height="6" rx="1" fill="#333"/><rect x="82" y="38" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="106" y="38" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="14" y="58" width="6" height="6" rx="1" fill="#333"/><rect x="30" y="58" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="22" y="66" width="6" height="6" rx="1" fill="#333"/><rect x="38" y="66" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="14" y="74" width="6" height="6" rx="1" fill="#333"/><rect x="30" y="74" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="58" y="58" width="6" height="6" rx="1" fill="#333"/><rect x="82" y="58" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="66" y="66" width="6" height="6" rx="1" fill="#333"/><rect x="98" y="66" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="110" y="58" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="58" y="74" width="6" height="6" rx="1" fill="#333"/><rect x="82" y="74" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="66" y="82" width="6" height="6" rx="1" fill="#333"/><rect x="98" y="82" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="74" y="90" width="6" height="6" rx="1" fill="#333"/><rect x="90" y="90" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="106" y="74" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="58" y="98" width="6" height="6" rx="1" fill="#333"/><rect x="82" y="98" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="66" y="106" width="6" height="6" rx="1" fill="#333"/><rect x="98" y="106" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="74" y="114" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="110" y="106" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="14" y="98" width="6" height="6" rx="1" fill="#333"/><rect x="30" y="98" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="22" y="106" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="38" y="114" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="14" y="114" width="6" height="6" rx="1" fill="#333"/><rect x="30" y="114" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="122" y="62" width="6" height="6" rx="1" fill="#333"/><rect x="138" y="62" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="130" y="70" width="6" height="6" rx="1" fill="#333"/><rect x="146" y="70" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="122" y="78" width="6" height="6" rx="1" fill="#333"/><rect x="138" y="78" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="130" y="86" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="122" y="94" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="138" y="102" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="130" y="110" width="6" height="6" rx="1" fill="#333"/><rect x="146" y="110" width="6" height="6" rx="1" fill="#333"/>
+            <rect x="122" y="118" width="6" height="6" rx="1" fill="#333"/><rect x="138" y="118" width="6" height="6" rx="1" fill="#333"/>
+            <!-- 中心Logo -->
+            <rect x="65" y="65" width="40" height="40" rx="8" fill="#E93323"/>
+            <text x="85" y="79" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">金盾</text>
+            <text x="85" y="93" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.8)">教育</text>
+          </svg>
+        </div>
+        <div class="promo-code-text" id="promoCode">JD2028A7X9</div>
+        <div class="promo-code-label">长按保存二维码分享给好友</div>
+      </div>
+      <div class="promo-dialog-footer">
+        <button class="promo-btn cancel" onclick="closePromo()">关闭</button>
+        <button class="promo-btn action" onclick="copyPromoCode()">复制推广码</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 推广海报弹窗 -->
+  <div class="poster-overlay" id="posterOverlay" onclick="closePoster()">
+    <div class="poster-dialog" onclick="event.stopPropagation()">
+      <div class="poster-close-btn" onclick="closePoster()">✕</div>
+      
+      <!-- 海报图部分 -->
+      <div class="poster-image-wrap">
+        <div class="poster-badge">&#x5206;&#x4EAB;&#x8D5A;&#x4F63;&#x91D1;</div>
+        <div class="poster-title">&#x5206;&#x4EAB;&#x63A8;&#x5E7F;&#x8BFE;&#x7A0B;<br>&#x83B7;&#x5F97;&#x4F63;&#x91D1;</div>
+        <div class="poster-sub">&#x63A8;&#x8350;&#x597D;&#x53CB;&#x8D2D;&#x4E70;&#xFF0C;&#x8F7B;&#x677E;&#x8D5A;&#x53D6;&#x63A8;&#x5E7F;&#x4F63;&#x91D1;</div>
+        
+        <div class="poster-course-list">
+          <div class="poster-course-item">
+            <div class="poster-course-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="poster-course-name">&#x4E00;&#x7EA7;&#x6D88;&#x9632;&#x5DE5;&#x7A0B;&#x5E08;</div>
+            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;200</div>
+          </div>
+          <div class="poster-course-item">
+            <div class="poster-course-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="poster-course-name">&#x4E8C;&#x7EA7;&#x5EFA;&#x9020;&#x5E08;</div>
+            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;150</div>
+          </div>
+          <div class="poster-course-item">
+            <div class="poster-course-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="poster-course-name">&#x521D;&#x7EA7;&#x4F1A;&#x8BA1;&#x804C;&#x79F0;</div>
+            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;100</div>
+          </div>
+        </div>
+        
+        <div class="poster-bottom-deco"><span></span><span></span><span></span></div>
+      </div>
+      
+      <!-- 用户信息+邀请码部分 -->
+      <div class="poster-user-section">
+        <div class="poster-user-left">
+          <div class="poster-user-avatar" id="posterAvatar">&#x5F20;</div>
+          <div>
+            <div class="poster-user-name" id="posterNickname">&#x5F20;&#x63A8;&#x5E7F;</div>
+            <div class="poster-user-label">&#x63A8;&#x5E7F;&#x5458;</div>
+          </div>
+        </div>
+        <div class="poster-invite-right">
+          <div class="poster-invite-label">&#x5C0F;&#x7A0B;&#x5E8F;&#x9080;&#x8BF7;&#x7801;</div>
+          <div class="poster-invite-code" id="posterInviteCode">JD2028A7X9</div>
+          <div class="poster-invite-qr">
+            <svg viewBox="0 0 40 40" width="100%" height="100%">
+              <rect x="0" y="0" width="40" height="40" rx="4" fill="#fff"/>
+              <rect x="4" y="4" width="10" height="10" rx="2" fill="none" stroke="#333" stroke-width="1.5"/>
+              <rect x="7" y="7" width="4" height="4" fill="#333"/>
+              <rect x="26" y="4" width="10" height="10" rx="2" fill="none" stroke="#333" stroke-width="1.5"/>
+              <rect x="29" y="7" width="4" height="4" fill="#333"/>
+              <rect x="4" y="26" width="10" height="10" rx="2" fill="none" stroke="#333" stroke-width="1.5"/>
+              <rect x="7" y="29" width="4" height="4" fill="#333"/>
+              <rect x="18" y="4" width="4" height="4" fill="#333"/>
+              <rect x="18" y="12" width="4" height="4" fill="#333"/>
+              <rect x="26" y="18" width="4" height="4" fill="#333"/>
+              <rect x="34" y="18" width="4" height="4" fill="#333"/>
+              <rect x="18" y="26" width="4" height="4" fill="#333"/>
+              <rect x="26" y="26" width="4" height="4" fill="#333"/>
+              <rect x="34" y="26" width="4" height="4" fill="#333"/>
+              <rect x="18" y="34" width="4" height="4" fill="#333"/>
+              <rect x="26" y="34" width="4" height="4" fill="#333"/>
+              <rect x="34" y="34" width="4" height="4" fill="#333"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 底部按钮 -->
+      <div class="poster-footer">
+        <button class="poster-footer-btn save" onclick="showToast('海报已保存到相册')">&#x4FDD;&#x5B58;&#x6D77;&#x62A5;</button>
+        <button class="poster-footer-btn share" onclick="showToast('已分享给好友')">&#x5206;&#x4EAB;&#x7ED9;&#x597D;&#x53CB;</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
 function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
 function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
-function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1500);}
+function showPromo(){document.getElementById('promoOverlay').classList.add('show');}
+function closePromo(){document.getElementById('promoOverlay').classList.remove('show');}
+function copyPromoCode(){var code=document.getElementById('promoCode').textContent;navigator.clipboard.writeText(code).then(function(){showToast('推广码已复制');}).catch(function(){showToast('复制失败，请手动复制');});}
+function showPoster(){document.getElementById('posterOverlay').classList.add('show');}
+function closePoster(){document.getElementById('posterOverlay').classList.remove('show');}
+(function syncBalance(){var b=localStorage.getItem('jd_commission_balance');if(b){var el=document.querySelector('.stat-amount.avail');if(el)el.textContent='¥'+parseFloat(b).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}})();
 </script>
 </body>
 </html>
