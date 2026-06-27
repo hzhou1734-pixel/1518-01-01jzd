@@ -34,16 +34,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
 .search-input span { color:#B0B0B0; font-size:13px; }
 .search-input .search-icon { width:16px; height:16px; flex-shrink:0; }
 
-/* 轮播 */
-.banner { height:150px; position:relative; overflow:hidden; border-radius:0; }
-.banner-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94); will-change:transform; }
-.banner-slide { min-width:100%; height:100%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; background-size:cover; background-position:center; }
-.banner-slide.slide-1 { background-image:url('banner-images/An_educational_flash_sale_post_2026-06-27T06-18-48.png'); }
-.banner-slide.slide-2 { background-image:url('banner-images/A_flat_illustration_poster_ban_2026-06-27T06-41-28.png'); }
-.banner-slide.slide-3 { background-image:url('banner-images/A_flat_illustration_poster_ban_2026-06-27T06-41-55.png'); }
-.banner-dots { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:2; }
-.banner-dots span { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); transition:all 0.3s; cursor:pointer; }
-.banner-dots span.active { background:#fff; width:16px; border-radius:3px; }
+/* Banner */
+.banner { height:150px; position:relative; overflow:hidden; border-radius:0; cursor:pointer; background-size:cover; background-position:center; }
+.banner-slide.slide-1 { background-image:url('banner-images/An_educational_flash_sale_post_2026-06-27T06-18-48.png'); height:100%; }
 
 /* 图标导航 */
 .icon-nav { background:#fff; padding:14px 10px 10px; display:flex; justify-content:space-around; }
@@ -137,19 +130,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
           <span>搜索课程</span>
         </div>
       </div>
-      <!-- Banner Carousel -->
-      <div class="banner" id="banner">
-        <div class="banner-track" id="bannerTrack">
-          <div class="banner-slide slide-1" onclick="navigateTo('06-flash-sale.html')"></div>
-          <div class="banner-slide slide-2" onclick="navigateTo('02-category.html')"></div>
-          <div class="banner-slide slide-3" onclick="navigateTo('09-distributor.html')"></div>
-        </div>
-        <div class="banner-dots" id="bannerDots">
-          <span class="active" data-index="0"></span>
-          <span data-index="1"></span>
-          <span data-index="2"></span>
-        </div>
-      </div>
+      <!-- Banner -->
+      <div class="banner-slide slide-1" onclick="navigateTo('06-flash-sale.html')"></div>
       <!-- Icon Nav -->
       <div class="icon-nav">
         <div class="icon-item" onclick="navigateTo('02-category.html')"><div class="icon-circle c1"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="8" height="6" rx="2" fill="#FF6B35"/><rect x="13" y="3" width="8" height="6" rx="2" fill="#A1E8CC"/><rect x="2" y="12" width="8" height="6" rx="2" fill="#FECF6A"/><rect x="13" y="12" width="8" height="6" rx="2" fill="#FF9A9E"/></svg></div>课程分类</div>
@@ -197,34 +179,6 @@ function showToast(msg) {
   t.textContent = msg; t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 1500);
 }
-// Banner 轮播
-(function(){
-  var track = document.getElementById('bannerTrack');
-  var dots = document.querySelectorAll('#bannerDots span');
-  var current = 0, total = 3, timer = null;
-  function goTo(idx) {
-    if(idx<0) idx=total-1; if(idx>=total) idx=0;
-    current = idx;
-    track.style.transform = 'translateX(-'+(current*100)+'%)';
-    dots.forEach(function(d,i){ d.classList.toggle('active', i===current); });
-  }
-  function next() { goTo(current+1); }
-  function startTimer() { stopTimer(); timer = setInterval(next, 3000); }
-  function stopTimer() { if(timer){ clearInterval(timer); timer=null; } }
-  // dot click
-  dots.forEach(function(d){ d.addEventListener('click',function(e){
-    e.stopPropagation(); stopTimer(); goTo(parseInt(this.dataset.index)); startTimer();
-  }); });
-  // swipe
-  var startX = 0;
-  track.addEventListener('touchstart',function(e){ startX=e.touches[0].clientX; stopTimer(); },{passive:true});
-  track.addEventListener('touchend',function(e){
-    var diff = startX - e.changedTouches[0].clientX;
-    if(diff>30) goTo(current+1); else if(diff<-30) goTo(current-1);
-    startTimer();
-  });
-  startTimer();
-})();
 </script>
 </body>
 </html>
