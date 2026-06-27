@@ -11,12 +11,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
 .phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
 .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
 .home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
-.status-bar { height:54px; background:transparent; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; font-size:12px; font-weight:600; color:#fff; flex-shrink:0; position:relative; z-index:10; }
+.status-bar { height:54px; background:transparent; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px 10px; font-size:12px; font-weight:600; color:#fff; flex-shrink:0; position:relative; z-index:10; }
 .status-time { font-weight:600; }
 .status-icons { display:flex; align-items:center; gap:6px; }
 
 /* 渐变头部 */
-.flash-hero { background:linear-gradient(160deg,#E93323 0%,#FF6B35 100%); padding:0 14px 16px; flex-shrink:0; }
+.flash-hero { background:linear-gradient(160deg,#D82A1E 0%,#E93323 30%,#FF6B35 70%,#FFA06B 100%); padding:0 14px 16px; flex-shrink:0; position:relative; overflow:hidden; box-shadow:0 2px 12px rgba(233,51,35,0.15); }
+.flash-hero::before { content:''; position:absolute; top:-40px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.05); pointer-events:none; }
+.flash-hero::after { content:''; position:absolute; bottom:-50px; left:40px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.03); pointer-events:none; }
 .nav-bar { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; color:#fff; padding-bottom:10px; }
 .nav-back { cursor:pointer; font-size:18px; color:#fff; }
 .nav-back:active { opacity:0.5; }

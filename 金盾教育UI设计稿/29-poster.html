@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推广海报 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:linear-gradient(180deg,#FFFAF8,#FFF);display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px 10px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:linear-gradient(180deg,#FFFDFA,#FFF);display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:1px solid rgba(233,51,35,0.06)}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+
+/* 海报模板 */
+.poster-section{padding:16px 12px 8px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:14px;font-weight:600;color:#333}
+.section-tip{font-size:11px;color:#B0B0B0}
+
+/* 海报预览卡片 */
+.poster-list{display:flex;gap:12px;padding:0 12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.poster-list::-webkit-scrollbar{height:0}
+.poster-item{flex-shrink:0;width:140px;text-align:center}
+.poster-thumb{width:140px;height:210px;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:transform .15s}
+.poster-thumb:active{transform:scale(0.97)}
+.poster-name{font-size:12px;color:#666;margin-top:8px}
+.poster-code{font-size:10px;color:#B0B0B0;margin-top:2px}
+
+/* 海报样式 */
+.poster-1{background:linear-gradient(180deg,#E93323 0%,#FF6B35 40%,#FFF 40%)}
+.poster-1 .p-top{height:40%;padding:24px 14px 0;text-align:center;color:#fff}
+.poster-1 .p-top-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.poster-1 .p-top-sub{font-size:10px;opacity:0.85}
+.poster-1 .p-body{padding:14px;text-align:center}
+.poster-1 .p-course{font-size:14px;font-weight:600;color:#333;margin-bottom:6px}
+.poster-1 .p-price{font-size:20px;font-weight:700;color:#E93323;margin-bottom:4px}
+.poster-1 .p-price span{font-size:11px;color:#B0B0B0;text-decoration:line-through;margin-left:6px;font-weight:400}
+.poster-1 .p-qr{margin:8px auto 0;width:64px;height:64px;background:#FFF;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #EEE}
+.poster-1 .p-qr svg{width:52px;height:52px}
+.poster-1 .p-tip{font-size:9px;color:#B0B0B0;margin-top:4px}
+
+.poster-2{background:linear-gradient(180deg,#1A1A2E 0%,#16213E 45%,#FFF 45%)}
+.poster-2 .p-top{height:45%;padding:20px 14px 0;text-align:center;color:#FECF6A}
+.poster-2 .p-top-badge{display:inline-block;border:1px solid #FECF6A;border-radius:12px;padding:3px 12px;font-size:10px;margin-bottom:8px}
+.poster-2 .p-top-title{font-size:16px;font-weight:700;line-height:1.4}
+.poster-2 .p-body{padding:14px;text-align:center}
+.poster-2 .p-course{font-size:13px;font-weight:600;color:#1A1A2E;margin-bottom:6px}
+.poster-2 .p-price{font-size:22px;font-weight:700;color:#E93323}
+.poster-2 .p-qr{margin:10px auto 0;width:64px;height:64px;background:#FFF;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #EEE}
+.poster-2 .p-qr svg{width:52px;height:52px}
+
+.poster-3{background:linear-gradient(180deg,#FFFAF5 0%,#FFF0E8 35%,#FFF 35%)}
+.poster-3 .p-top{height:35%;padding:20px 14px 0;text-align:center}
+.poster-3 .p-top-icon{width:48px;height:48px;background:linear-gradient(135deg,#E93323,#FF6B35);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+.poster-3 .p-top-title{font-size:16px;font-weight:700;color:#E93323}
+.poster-3 .p-body{padding:14px;text-align:center}
+.poster-3 .p-course{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+.poster-3 .p-desc{font-size:11px;color:#888;margin-bottom:8px;line-height:1.5}
+.poster-3 .p-price{font-size:20px;font-weight:700;color:#E93323}
+.poster-3 .p-qr{margin:8px auto 0;width:60px;height:60px;background:#FFF;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #EEE}
+.poster-3 .p-qr svg{width:48px;height:48px}
+
+/* 生成按钮 */
+.action-bar{padding:12px;flex-shrink:0}
+.action-btn{width:100%;background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;border:none;border-radius:22px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+.action-btn:active{opacity:0.85}
+
+/* 预览弹窗 */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:998;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.show{opacity:1;pointer-events:auto}
+.preview-card{background:#fff;border-radius:16px;width:300px;overflow:hidden;text-align:center}
+.preview-header{padding:16px;display:flex;justify-content:space-between;align-items:center}
+.preview-title{font-size:15px;font-weight:600;color:#333}
+.preview-close{width:28px;height:28px;border-radius:50%;background:#F5F5F5;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#999}
+.preview-body{background:#F5F5F5;padding:20px;display:flex;justify-content:center}
+.preview-poster{width:240px;height:340px;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+.preview-action{padding:16px;display:flex;gap:10px}
+.preview-btn{flex:1;padding:12px;border-radius:22px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
+.preview-btn.outline{border:1px solid #E0E0E0;background:none;color:#666}
+.preview-btn.fill{background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">推广海报</span></div>
+    <div class="scroll-content">
+      <div class="poster-section">
+        <div class="section-header">
+          <div class="section-title">选择海报模板</div>
+          <div class="section-tip">长按保存分享</div>
+        </div>
+      </div>
+
+      <div class="poster-list">
+        <!-- 海报1 红底 -->
+        <div class="poster-item" onclick="previewPoster(1)">
+          <div class="poster-thumb">
+            <div class="poster-1" style="width:140px;height:210px">
+              <div class="p-top" style="height:40%;padding:20px 10px 0">
+                <div class="p-top-title" style="font-size:16px">金盾教育</div>
+                <div class="p-top-sub" style="font-size:9px">专业职业资格培训平台</div>
+              </div>
+              <div class="p-body" style="padding:10px">
+                <div class="p-course" style="font-size:12px">消防工程师·一级全科</div>
+                <div class="p-price" style="font-size:16px">¥1999<span style="font-size:9px">¥2999</span></div>
+                <div class="p-qr" style="width:50px;height:50px;margin-top:6px">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#E93323"/><text x="12" y="16" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">QR</text></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="poster-name">经典红金</div>
+          <div class="poster-code">模板 #001</div>
+        </div>
+
+        <!-- 海报2 深色 -->
+        <div class="poster-item" onclick="previewPoster(2)">
+          <div class="poster-thumb">
+            <div class="poster-2" style="width:140px;height:210px">
+              <div class="p-top" style="height:45%;padding:18px 10px 0">
+                <div class="p-top-badge" style="font-size:8px;padding:2px 8px">限时优惠</div>
+                <div class="p-top-title" style="font-size:14px;margin-top:6px">消防工程师<br>全程精品班</div>
+              </div>
+              <div class="p-body" style="padding:10px">
+                <div class="p-course" style="font-size:12px">仅限 50 个名额</div>
+                <div class="p-price" style="font-size:18px">¥1999</div>
+                <div class="p-qr" style="width:50px;height:50px;margin-top:6px">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FECF6A"/><text x="12" y="16" font-size="8" fill="#1A1A2E" text-anchor="middle" font-weight="bold">QR</text></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="poster-name">暗夜金辉</div>
+          <div class="poster-code">模板 #002</div>
+        </div>
+
+        <!-- 海报3 清新 -->
+        <div class="poster-item" onclick="previewPoster(3)">
+          <div class="poster-thumb">
+            <div class="poster-3" style="width:140px;height:210px">
+              <div class="p-top" style="height:35%;padding:18px 10px 0">
+                <div class="p-top-icon" style="width:36px;height:36px;border-radius:10px;margin-bottom:6px">
+                  <svg viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M12 2L20 5L20 14C20 20 12 24 12 24C12 24 4 20 4 14L4 5Z" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M8 12L11 15L16 9" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="p-top-title" style="font-size:14px">金盾教育</div>
+              </div>
+              <div class="p-body" style="padding:10px">
+                <div class="p-course" style="font-size:12px">消防工程师精品课程</div>
+                <div class="p-desc" style="font-size:9px;margin-bottom:6px">一线名师授课·通过率领先</div>
+                <div class="p-price" style="font-size:16px">¥1999起</div>
+                <div class="p-qr" style="width:46px;height:46px;margin-top:6px">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#E93323"/><text x="12" y="16" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">QR</text></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="poster-name">清新简约</div>
+          <div class="poster-code">模板 #003</div>
+        </div>
+      </div>
+
+      <div style="height:100px"></div>
+    </div>
+
+    <!-- 底部生成按钮 -->
+    <div class="action-bar">
+      <button class="action-btn" onclick="generatePoster()">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#fff" opacity="0.6"/><path d="M14 2v6h6" stroke="#fff" fill="none" stroke-width="1.5"/><circle cx="12" cy="15" r="3" fill="#fff" opacity="0.5"/></svg>
+        生成我的专属海报
+      </button>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+
+<!-- 预览弹窗 -->
+<div class="overlay" id="overlay" onclick="closePreview()">
+  <div class="preview-card" id="previewCard" onclick="event.stopPropagation()">
+    <div class="preview-header">
+      <span class="preview-title" id="previewTitle">海报预览</span>
+      <div class="preview-close" onclick="closePreview()">✕</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-poster" id="previewContent"></div>
+    </div>
+    <div class="preview-action">
+      <button class="preview-btn outline" onclick="closePreview()">换一个</button>
+      <button class="preview-btn fill" onclick="savePoster()">保存到相册</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1500)}
+
+var currentPoster = 0;
+
+function previewPoster(n){
+  currentPoster = n;
+  var thumb = document.querySelectorAll('.poster-thumb')[n-1];
+  document.getElementById('previewContent').innerHTML = thumb.querySelector('div').outerHTML;
+  document.getElementById('previewContent').firstElementChild.style.width = '240px';
+  document.getElementById('previewContent').firstElementChild.style.height = '340px';
+  document.getElementById('previewTitle').textContent = {
+    1:'经典红金 - 海报预览',
+    2:'暗夜金辉 - 海报预览',
+    3:'清新简约 - 海报预览'
+  }[n];
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closePreview(){
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function generatePoster(){
+  currentPoster = 1;
+  previewPoster(1);
+}
+
+function savePoster(){
+  showToast('保存成功，快去分享给好友吧！');
+  closePreview();
+}
+</script>
+</body>
+</html>

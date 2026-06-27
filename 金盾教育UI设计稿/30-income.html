@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>收益明细 - 金盾教育分销小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:linear-gradient(180deg,#FFFAF8,#FFF);display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px 10px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:linear-gradient(180deg,#FFFDFA,#FFF);display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:1px solid rgba(233,51,35,0.06)}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+
+/* 收益总览 */
+.income-header{background:linear-gradient(135deg,#D82A1E,#E93323 30%,#FF6B35);margin:12px;border-radius:14px;padding:20px;color:#fff}
+.income-total-label{font-size:12px;opacity:0.8;margin-bottom:4px}
+.income-total-num{font-size:32px;font-weight:700;letter-spacing:0.5px}
+.income-header-row{display:flex;justify-content:space-between;margin-top:16px;gap:8px}
+.income-header-item{flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center}
+.income-header-v{font-size:15px;font-weight:600}
+.income-header-l{font-size:10px;opacity:0.75;margin-top:2px}
+
+/* 筛选 Tab */
+.filter-tab{display:flex;background:#fff;margin:0 12px 10px;border-radius:10px;padding:4px;gap:4px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.filter-btn{flex:1;padding:7px 0;border-radius:7px;font-size:12px;font-weight:500;color:#888;border:none;background:transparent;cursor:pointer;font-family:inherit;transition:all .15s}
+.filter-btn.active{background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;box-shadow:0 2px 8px rgba(233,51,35,0.25)}
+
+/* 列表区 */
+.list-wrap{padding:0 12px 12px}
+
+/* 订单卡片 */
+.order-card{background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden}
+
+/* 卡片顶部：订单号 + 状态标签 */
+.card-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid #F5F5F5}
+.order-no{font-size:11px;color:#999;letter-spacing:0.3px}
+.status-tag{font-size:11px;font-weight:500;padding:3px 8px;border-radius:8px;flex-shrink:0}
+.status-tag.frozen{background:#FFF0ED;color:#E93323}
+.status-tag.thawed{background:#E8F5E9;color:#07C160}
+
+/* 卡片中部：用户信息行 */
+.card-user{display:flex;align-items:center;gap:10px;padding:10px 14px 8px;border-bottom:1px solid #F5F5F5}
+.user-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;overflow:hidden}
+.user-name{font-size:13px;color:#333;font-weight:500}
+.user-sub{font-size:11px;color:#B0B0B0;margin-top:1px}
+
+/* 卡片底部：金额行 */
+.card-amounts{display:flex;align-items:center;padding:8px 14px 10px;gap:0}
+.amt-block{flex:1}
+.amt-label{font-size:10px;color:#ABABAB;margin-bottom:2px}
+.amt-val{font-size:14px;font-weight:600;color:#333}
+.amt-val.commission{color:#E93323}
+.amt-val.commission-thawed{color:#07C160}
+.amt-divider{width:1px;height:28px;background:#F0F0F0;margin:0 12px}
+
+/* 返佣时间 */
+.card-time{padding:0 14px 10px;font-size:11px;color:#BDBDBD}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#000"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#000"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#000"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#000"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#000"/><circle cx="7.5" cy="9" r="1.5" fill="#000"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#000" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#000"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#000"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">收益明细</span></div>
+    <div class="scroll-content">
+
+      <!-- 收益总览 -->
+      <div class="income-header">
+        <div class="income-total-label">累计推广收益</div>
+        <div class="income-total-num">¥17,325.20</div>
+        <div class="income-header-row">
+          <div class="income-header-item"><div class="income-header-v">¥14,408</div><div class="income-header-l">总佣金</div></div>
+          <div class="income-header-item"><div class="income-header-v">¥5,888</div><div class="income-header-l">待返佣</div></div>
+          <div class="income-header-item"><div class="income-header-v">¥8,520</div><div class="income-header-l">已返佣</div></div>
+        </div>
+      </div>
+
+      <!-- 筛选 Tab -->
+      <div class="filter-tab">
+        <button class="filter-btn" id="tabAll" onclick="filterStatus('all')">全部</button>
+        <button class="filter-btn" id="tabFrozen" onclick="filterStatus('frozen')">待返佣</button>
+        <button class="filter-btn" id="tabThawed" onclick="filterStatus('thawed')">已返佣</button>
+      </div>
+
+      <!-- 订单列表 -->
+      <div class="list-wrap">
+
+        <!-- 订单1：待返佣（冻结） -->
+        <div class="order-card" data-status="frozen">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202606261432001</span>
+            <span class="status-tag frozen">待返佣</span>
+          </div>
+          <div class="card-user">
+            <!-- 用户头像：手绘风格SVG -->
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#FFD6C8"/><circle cx="16" cy="13" r="5.5" fill="#FF9A7A"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#FF9A7A"/></svg>
+            </div>
+            <div>
+              <div class="user-name">张小明</div>
+              <div class="user-sub">消防工程师一级全科</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥1,299.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission">+¥260.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-06-26 14:32</div>
+        </div>
+
+        <!-- 订单2：已返佣（解冻） -->
+        <div class="order-card" data-status="thawed">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202606261015002</span>
+            <span class="status-tag thawed">已返佣</span>
+          </div>
+          <div class="card-user">
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#C8E6FF"/><circle cx="16" cy="13" r="5.5" fill="#7AB8F5"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#7AB8F5"/></svg>
+            </div>
+            <div>
+              <div class="user-name">李晓美</div>
+              <div class="user-sub">消防工程师二级精讲</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥899.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission-thawed">+¥180.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-06-26 10:15</div>
+        </div>
+
+        <!-- 订单3：待返佣（冻结） -->
+        <div class="order-card" data-status="frozen">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202606251108003</span>
+            <span class="status-tag frozen">待返佣</span>
+          </div>
+          <div class="card-user">
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#D8F5D0"/><circle cx="16" cy="13" r="5.5" fill="#7ACC6A"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#7ACC6A"/></svg>
+            </div>
+            <div>
+              <div class="user-name">王建国</div>
+              <div class="user-sub">消防工程师一级全科 ×2</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥2,598.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission">+¥260.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-06-25 11:08</div>
+        </div>
+
+        <!-- 订单4：已返佣（解冻） -->
+        <div class="order-card" data-status="thawed">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202606250830004</span>
+            <span class="status-tag thawed">已返佣</span>
+          </div>
+          <div class="card-user">
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#FFF3C8"/><circle cx="16" cy="13" r="5.5" fill="#F5C842"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#F5C842"/></svg>
+            </div>
+            <div>
+              <div class="user-name">赵雨桐</div>
+              <div class="user-sub">消防工程师二级精讲</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥899.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission-thawed">+¥48.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-06-25 08:30</div>
+        </div>
+
+        <!-- 订单5：待返佣（冻结） -->
+        <div class="order-card" data-status="frozen">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202605281802005</span>
+            <span class="status-tag frozen">待返佣</span>
+          </div>
+          <div class="card-user">
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#ECD8FF"/><circle cx="16" cy="13" r="5.5" fill="#B07AF5"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#B07AF5"/></svg>
+            </div>
+            <div>
+              <div class="user-name">陈浩然</div>
+              <div class="user-sub">消防工程师一级全科 ×5</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥6,495.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission">+¥850.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-05-28 18:02</div>
+        </div>
+
+        <!-- 订单6：已返佣（解冻） -->
+        <div class="order-card" data-status="thawed">
+          <div class="card-top">
+            <span class="order-no">订单号：JD202605281200006</span>
+            <span class="status-tag thawed">已返佣</span>
+          </div>
+          <div class="card-user">
+            <div class="user-avatar">
+              <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#FFD6E8"/><circle cx="16" cy="13" r="5.5" fill="#F57AB0"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="#F57AB0"/></svg>
+            </div>
+            <div>
+              <div class="user-name">刘思思</div>
+              <div class="user-sub">消防工程师一级全科</div>
+            </div>
+          </div>
+          <div class="card-amounts">
+            <div class="amt-block">
+              <div class="amt-label">订单金额</div>
+              <div class="amt-val">¥1,299.00</div>
+            </div>
+            <div class="amt-divider"></div>
+            <div class="amt-block">
+              <div class="amt-label">佣金金额</div>
+              <div class="amt-val commission-thawed">+¥400.00</div>
+            </div>
+          </div>
+          <div class="card-time">返佣时间：2026-05-28 12:00</div>
+        </div>
+
+      </div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+
+function filterStatus(status){
+  // 更新 Tab 高亮
+  ['tabAll','tabFrozen','tabThawed'].forEach(function(id){
+    document.getElementById(id).classList.remove('active');
+  });
+  if(status==='all') document.getElementById('tabAll').classList.add('active');
+  else if(status==='frozen') document.getElementById('tabFrozen').classList.add('active');
+  else if(status==='thawed') document.getElementById('tabThawed').classList.add('active');
+  // 显示/隐藏卡片
+  document.querySelectorAll('.order-card').forEach(function(card){
+    if(status==='all') card.style.display='';
+    else card.style.display=(card.dataset.status===status)?'':'none';
+  });
+}
+
+// 页面加载时读取 URL 参数，自动筛选
+(function(){
+  var params=new URLSearchParams(location.search);
+  var filter=params.get('filter');
+  if(filter==='frozen') filterStatus('frozen');
+  else filterStatus('all');
+})();
+</script>
+</body>
+</html>

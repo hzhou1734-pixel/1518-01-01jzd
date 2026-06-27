@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设置 - 金盾教育分销小程序</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background:#E8E8ED; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone-frame { width:375px; height:812px; background:#0d0d0d; border-radius:44px; position:relative; box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #0d0d0d, 0 0 0 8px #222, 0 12px 50px rgba(0,0,0,0.35); overflow:hidden; }
+.phone-screen { position:absolute; top:0; left:0; right:0; bottom:0; background:#F5F5F5; border-radius:40px; overflow:hidden; display:flex; flex-direction:column; }
+.notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:210px; height:30px; background:#0d0d0d; border-radius:0 0 20px 20px; z-index:100; }
+.home-indicator { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:134px; height:5px; background:rgba(0,0,0,0.15); border-radius:3px; z-index:100; }
+
+/* 状态栏 & 页头 */
+.header-group { background:linear-gradient(135deg,#D82A1E,#E93323 30%,#FF6B35); flex-shrink:0; position:relative; }
+.status-bar { height:54px; background:transparent; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px 10px; font-size:12px; font-weight:600; color:#fff; position:relative; }
+.status-bar::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); pointer-events:none; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+
+/* 页头 */
+.nav-bar { background:transparent; color:#fff; padding:0 14px; font-size:16px; font-weight:600; display:flex; align-items:center; gap:10px; height:44px; position:relative; box-shadow:0 2px 12px rgba(233,51,35,0.15); }
+.nav-bar::before { content:''; position:absolute; top:0; right:20px; width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
+.nav-back { cursor:pointer; color:#fff; font-size:18px; text-decoration:none; line-height:1; }
+.nav-title { flex:1; text-align:center; font-size:16px; font-weight:600; color:#fff; padding-right:40px; }
+
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.scroll-content::-webkit-scrollbar { width:0; }
+
+.section-gap { height:8px; background:#F5F5F5; }
+.section-title { font-size:12px; color:#999; padding:14px 16px 6px; }
+
+/* 个人信息编辑区 */
+.profile-edit { background:#fff; }
+.edit-row { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:0.5px solid #F5F5F5; min-height:50px; }
+.edit-row:last-child { border-bottom:none; }
+.edit-label { font-size:14px; color:#333; flex-shrink:0; width:60px; }
+.edit-avatar-wrap { display:flex; align-items:center; gap:10px; }
+.edit-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FFB5A7,#FF9A9E); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; }
+.edit-avatar svg { width:34px; height:34px; display:block; }
+.edit-avatar-arrow { color:#C0C0C0; font-size:16px; }
+.edit-value { font-size:14px; color:#666; text-align:right; flex:1; margin-left:12px; }
+.edit-input { border:none; outline:none; font-size:14px; color:#333; text-align:right; flex:1; margin-left:12px; background:transparent; font-family:inherit; width:100%; }
+.edit-input::placeholder { color:#C0C0C0; }
+
+/* 菜单组 */
+.menu-group { background:#fff; }
+.menu-row { display:flex; justify-content:space-between; align-items:center; padding:15px 16px; cursor:pointer; border-bottom:0.5px solid #F5F5F5; transition:background .15s; }
+.menu-row:active { background:#FAFAFA; }
+.menu-row:last-child { border-bottom:none; }
+.menu-label { font-size:14px; color:#333; display:flex; align-items:center; gap:10px; }
+.menu-icon svg { width:20px; height:20px; display:block; }
+.menu-arrow { color:#C0C0C0; }
+.menu-value { font-size:12px; color:#999; }
+
+.logout-btn { margin:24px 16px; background:#fff; border-radius:10px; text-align:center; padding:14px; font-size:15px; color:#E93323; cursor:pointer; transition:background .15s; }
+.logout-btn:active { background:#FFF0ED; }
+
+/* 弹窗 */
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.75); color:#fff; padding:12px 24px; border-radius:8px; font-size:13px; z-index:999; pointer-events:none; opacity:0; transition:opacity .2s; }
+.toast.show { opacity:1; }
+
+/* 更换头像底部弹窗 */
+.overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); z-index:200; opacity:0; pointer-events:none; transition:opacity .25s; }
+.overlay.show { opacity:1; pointer-events:auto; }
+.action-sheet { position:absolute; bottom:0; left:0; right:0; background:#F5F5F7; border-radius:12px 12px 0 0; transform:translateY(100%); transition:transform .3s cubic-bezier(0.32, 0.72, 0, 1); z-index:201; padding:8px 0 calc(8px + env(safe-area-inset-bottom)); }
+.overlay.show .action-sheet { transform:translateY(0); }
+.sheet-title { text-align:center; font-size:13px; color:#8E8E93; padding:12px 0 6px; }
+.sheet-option { display:flex; align-items:center; gap:14px; padding:16px 20px; background:#fff; cursor:pointer; font-size:16px; color:#333; border-bottom:0.5px solid #F0F0F0; transition:background .12s; }
+.sheet-option:first-of-type { border-radius:12px 12px 0 0; }
+.sheet-option:last-of-type { border-radius:0 0 12px 12px; border-bottom:none; }
+.sheet-option:active { background:#E8E8ED; }
+.sheet-option-icon { width:24px; height:24px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sheet-option-icon svg { width:22px; height:22px; }
+.sheet-cancel { display:block; width:calc(100% - 16px); margin:8px 8px 0; padding:14px; background:#fff; border:none; border-radius:12px; font-size:17px; color:#333; font-weight:500; cursor:pointer; text-align:center; }
+.sheet-cancel:active { background:#E8E8ED; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="header-group">
+    <div class="status-bar"><span class="status-time" style="color:#fff;font-weight:600;">9:41</span><div class="status-icons"><svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="#fff"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="#fff"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="#fff"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="#fff"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.5C5.2 2.5 3.1 3.3 1.5 4.7L0 3.2C2.1 1.4 4.7 0.5 7.5 0.5S12.9 1.4 15 3.2l-1.5 1.5C11.9 3.3 9.8 2.5 7.5 2.5z" fill="#fff"/><path d="M7.5 5.5C6.1 5.5 4.9 6 4 6.8L2.5 5.3C3.9 4.1 5.6 3.5 7.5 3.5s3.6 0.6 5 1.8L11 6.8C10.1 6 8.9 5.5 7.5 5.5z" fill="#fff"/><circle cx="7.5" cy="9" r="1.5" fill="#fff"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="2" y="2" width="14" height="8" rx="1" fill="#fff"/><rect x="22" y="3.5" width="2" height="5" rx="0.8" fill="#fff"/></svg></div></div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">设置</span></div>
+    </div><!-- .header-group -->
+    <div class="scroll-content">
+
+      <!-- 个人信息修改区 -->
+      <div class="profile-edit">
+        <div class="edit-row" onclick="showAvatarSheet()">
+          <span class="edit-label">头像</span>
+          <div class="edit-avatar-wrap">
+            <div class="edit-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#FFB5A7"/><circle cx="8.5" cy="10" r="1.8" fill="#4A3728"/><circle cx="15.5" cy="10" r="1.8" fill="#4A3728"/><circle cx="9" cy="9.3" r="0.7" fill="#fff"/><circle cx="16" cy="9.3" r="0.7" fill="#fff"/><ellipse cx="7" cy="13" rx="2.2" ry="1.8" fill="#FF9A9E" opacity="0.45"/><ellipse cx="17" cy="13" rx="2.2" ry="1.8" fill="#FF9A9E" opacity="0.45"/><path d="M9 14.5 Q12 17.5 15 14.5" stroke="#4A3728" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg></div>
+            <span class="edit-avatar-arrow">›</span>
+          </div>
+        </div>
+        <div class="edit-row" onclick="editNickname()">
+          <span class="edit-label">昵称</span>
+          <input class="edit-input" id="nicknameInput" type="text" value="张同学" placeholder="请输入昵称" onfocus="this.select()">
+        </div>
+        <div class="edit-row" onclick="editPhone()">
+          <span class="edit-label">手机号码</span>
+          <input class="edit-input" id="phoneInput" type="text" value="138****6789" placeholder="请输入手机号" readonly>
+        </div>
+      </div>
+
+      <div class="section-title">通用</div>
+      <div class="menu-group">
+        <div class="menu-row" onclick="navigateTo('17-agreement.html')">
+          <span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="3" fill="#FFD6A5"/><rect x="6" y="6" width="12" height="2" rx="1" fill="#fff" opacity=".5"/><rect x="6" y="10" width="10" height="2" rx="1" fill="#fff" opacity=".5"/><rect x="6" y="14" width="8" height="2" rx="1" fill="#fff" opacity=".5"/><rect x="6" y="18" width="5" height="2" rx="1" fill="#fff" opacity=".5"/></svg></span>用户协议</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-row" onclick="navigateTo('18-privacy.html')">
+          <span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="12" rx="3" fill="#FF9A9E"/><path d="M8 10V6.5a4 4 0 018 0V10" stroke="#FF6B35" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="12" cy="15.5" r="2" fill="#fff" opacity=".65"/><rect x="11" y="15" width="2" height="4" rx="1" fill="#fff" opacity=".65"/></svg></span>隐私政策</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-row" onclick="showToast('关于金盾教育')">
+          <span class="menu-label"><span class="menu-icon"><svg viewBox="0 0 24 24"><path d="M12 2L20 5L20 14C20 20 12 24 12 24C12 24 4 20 4 14L4 5Z" fill="#E93323"/><circle cx="12" cy="11" r="3" fill="#fff" opacity="0.7"/><rect x="8" y="16" width="8" height="2" rx="1" fill="#fff" opacity="0.5"/></svg></span>关于金盾教育</span>
+          <span class="menu-value">v1.0.1</span>
+        </div>
+      </div>
+      <div class="logout-btn" onclick="showToast('已退出登录');setTimeout(function(){location.href='11-login.html';},600)">退出登录</div>
+    </div>
+    <div class="overlay" id="avatarOverlay" onclick="hideAvatarSheet()">
+      <div class="action-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-title">更换头像</div>
+        <div class="sheet-option" onclick="chooseWechatAvatar()">
+          <span class="sheet-option-icon"><svg viewBox="0 0 24 24"><path d="M8.7 3.4C4.7 3.4 1.5 6.1 1.5 9.3c0 1.8 1 3.4 2.5 4.5l-.6 1.9c-.1.3.2.6.5.4l2.3-1.3c.7.2 1.5.4 2.4.4.2 0 .5 0 .7-.1C8.8 13.2 8.5 11.7 8.5 10c0-3.6 3.6-6.6 8-6.6.3 0 .5 0 .8.1C16.1 2.1 12.7 3.4 8.7 3.4z" fill="#07C160"/><path d="M7.2 10.5c.3 0 .5-.3.5-.6s-.3-.6-.6-.6c-.3 0-.6.3-.6.6s.2.6.6.6zm3.2 0c.3 0 .5-.3.5-.6s-.2-.6-.5-.6-.6.3-.6.6.3.6.6.6z" fill="#07C160"/><path d="M15.3 8c-4 0-7.2 2.7-7.2 5.9 0 2.2 1.3 4.1 3.4 5.2l-.7 1.8c-.1.3.2.5.4.4l2.4-1.3c.6.1 1.2.2 1.8.2 4 0 7.1-2.6 7.1-5.8S19.2 8 15.3 8z" fill="#07C160"/><path d="M13.2 12.9c.2 0 .4-.2.4-.4s-.2-.4-.4-.4c-.3 0-.5.2-.5.5s.2.4.5.4zm3.4 0c.2 0 .4-.2.4-.4s-.2-.5-.5-.5-.4.2-.4.5.2.4.5.4z" fill="#07C160"/></svg></span>
+          <span>授权微信头像</span>
+        </div>
+        <div class="sheet-option" onclick="chooseFromAlbum()">
+          <span class="sheet-option-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="3" fill="#FFA502"/><circle cx="8.5" cy="10" r="2.5" fill="#fff" opacity=".75"/><path d="M2 17l5.5-5.5L11 15l4.5-4.5L22 17" stroke="#fff" stroke-width="1.5" fill="none" opacity=".6"/></svg></span>
+          <span>从相册选择</span>
+        </div>
+        <div class="sheet-option" onclick="chooseFromCamera()">
+          <span class="sheet-option-icon"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" rx="3" fill="#5B8FF9"/><circle cx="12" cy="12.5" r="3.5" fill="#fff" opacity=".9"/><circle cx="12" cy="12.5" r="1.5" fill="#5B8FF9"/><rect x="9" y="3" width="6" height="3" rx="1.5" fill="#5B8FF9" opacity=".6"/></svg></span>
+          <span>打开相机拍摄</span>
+        </div>
+        <button class="sheet-cancel" onclick="hideAvatarSheet()">取消</button>
+      </div>
+    </div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var nicknameInput = document.getElementById('nicknameInput');
+var phoneInput = document.getElementById('phoneInput');
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},1500); }
+function editNickname() { nicknameInput.readOnly = false; nicknameInput.focus(); nicknameInput.select(); }
+function editPhone() { showToast('手机号修改需短信验证'); }
+// 失去焦点保存昵称
+nicknameInput.addEventListener('blur', function(){ if(this.value.trim()){ showToast('昵称已更新'); } else { this.value = '张同学'; } });
+
+// 头像更换弹窗
+function showAvatarSheet() { document.getElementById('avatarOverlay').classList.add('show'); }
+function hideAvatarSheet() { document.getElementById('avatarOverlay').classList.remove('show'); }
+function chooseWechatAvatar() { hideAvatarSheet(); showToast('正在授权获取微信头像…'); }
+function chooseFromAlbum() { hideAvatarSheet(); showToast('正在打开相册…'); }
+function chooseFromCamera() { hideAvatarSheet(); showToast('正在打开相机…'); }
+</script>
+</body>
+</html>
