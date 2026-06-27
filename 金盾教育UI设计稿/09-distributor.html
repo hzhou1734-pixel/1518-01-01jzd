@@ -152,33 +152,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
 .poster-badge { display:inline-block; background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); color:#fff; font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.15); }
 .poster-title { font-size:22px; font-weight:800; color:#fff; line-height:1.3; margin-bottom:8px; text-shadow:0 2px 8px rgba(0,0,0,0.15); }
 .poster-sub { font-size:13px; color:rgba(255,255,255,0.85); margin-bottom:16px; }
-.poster-course-list { display:flex; flex-direction:column; gap:8px; }
-.poster-course-item { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.15); backdrop-filter:blur(4px); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); }
-.poster-course-icon { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.poster-course-icon svg { width:18px; height:18px; fill:#fff; }
-.poster-course-name { flex:1; font-size:13px; font-weight:600; color:#fff; }
-.poster-course-commission { font-size:14px; font-weight:700; color:#FFD700; }
 .poster-bottom-deco { display:flex; justify-content:center; gap:6px; margin-top:16px; }
 .poster-bottom-deco span { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); }
 .poster-bottom-deco span:first-child { width:20px; border-radius:3px; background:rgba(255,255,255,0.5); }
 
-/* 用户信息+邀请码部分 */
+/* 用户信息部分 */
 .poster-user-section { display:flex; align-items:center; padding:16px 20px; background:#fff; border-top:1px solid #F0F0F0; }
 .poster-user-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
 .poster-user-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FF6B35,#FF9A9E); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; font-size:18px; font-weight:700; }
 .poster-user-name { font-size:14px; font-weight:600; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .poster-user-label { font-size:11px; color:#999; margin-top:2px; }
-.poster-invite-right { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; margin-left:12px; }
-.poster-invite-code { font-size:16px; font-weight:700; color:#E93323; letter-spacing:1px; font-family:'Courier New',monospace; }
-.poster-invite-label { font-size:10px; color:#999; }
-.poster-invite-qr { width:50px; height:50px; border-radius:6px; background:#F5F5F5; display:flex; align-items:center; justify-content:center; margin-top:4px; }
-.poster-invite-qr svg { width:40px; height:40px; }
+.poster-invite-right { display:flex; align-items:center; flex-shrink:0; margin-left:12px; }
+.poster-invite-qr { width:50px; height:50px; border-radius:6px; background:#F5F5F5; display:flex; align-items:center; justify-content:center; }
 
 /* 弹窗底部按钮 */
 .poster-footer { display:flex; border-top:0.5px solid #F0F0F0; }
 .poster-footer-btn { flex:1; padding:14px; font-size:15px; text-align:center; cursor:pointer; border:none; background:none; font-family:inherit; }
-.poster-footer-btn.save { color:#E93323; font-weight:600; border-right:0.5px solid #F0F0F0; }
-.poster-footer-btn.share { color:#E93323; font-weight:600; }
+.poster-footer-btn.save { color:#E93323; font-weight:600; }
 .poster-footer-btn:active { background:#F5F5F5; }
 
 /* 关闭按钮 */
@@ -479,34 +469,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
         <div class="poster-title">&#x5206;&#x4EAB;&#x63A8;&#x5E7F;&#x8BFE;&#x7A0B;<br>&#x83B7;&#x5F97;&#x4F63;&#x91D1;</div>
         <div class="poster-sub">&#x63A8;&#x8350;&#x597D;&#x53CB;&#x8D2D;&#x4E70;&#xFF0C;&#x8F7B;&#x677E;&#x8D5A;&#x53D6;&#x63A8;&#x5E7F;&#x4F63;&#x91D1;</div>
         
-        <div class="poster-course-list">
-          <div class="poster-course-item">
-            <div class="poster-course-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <div class="poster-course-name">&#x4E00;&#x7EA7;&#x6D88;&#x9632;&#x5DE5;&#x7A0B;&#x5E08;</div>
-            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;200</div>
-          </div>
-          <div class="poster-course-item">
-            <div class="poster-course-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <div class="poster-course-name">&#x4E8C;&#x7EA7;&#x5EFA;&#x9020;&#x5E08;</div>
-            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;150</div>
-          </div>
-          <div class="poster-course-item">
-            <div class="poster-course-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <div class="poster-course-name">&#x521D;&#x7EA7;&#x4F1A;&#x8BA1;&#x804C;&#x79F0;</div>
-            <div class="poster-course-commission">&#x4F63;&#x91D1; &#xA5;100</div>
-          </div>
-        </div>
-        
         <div class="poster-bottom-deco"><span></span><span></span><span></span></div>
       </div>
       
-      <!-- 用户信息+邀请码部分 -->
+      <!-- 用户信息部分 -->
       <div class="poster-user-section">
         <div class="poster-user-left">
           <div class="poster-user-avatar" id="posterAvatar">&#x5F20;</div>
@@ -516,8 +482,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
           </div>
         </div>
         <div class="poster-invite-right">
-          <div class="poster-invite-label">&#x5C0F;&#x7A0B;&#x5E8F;&#x9080;&#x8BF7;&#x7801;</div>
-          <div class="poster-invite-code" id="posterInviteCode">JD2028A7X9</div>
           <div class="poster-invite-qr">
             <svg viewBox="0 0 40 40" width="100%" height="100%">
               <rect x="0" y="0" width="40" height="40" rx="4" fill="#fff"/>
@@ -544,8 +508,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ping
       
       <!-- 底部按钮 -->
       <div class="poster-footer">
-        <button class="poster-footer-btn save" onclick="showToast('海报已保存到相册')">&#x4FDD;&#x5B58;&#x6D77;&#x62A5;</button>
-        <button class="poster-footer-btn share" onclick="showToast('已分享给好友')">&#x5206;&#x4EAB;&#x7ED9;&#x597D;&#x53CB;</button>
+        <button class="poster-footer-btn save" onclick="showToast('海报已保存到相册')" style="border-right:none;">&#x4FDD;&#x5B58;&#x6D77;&#x62A5;</button>
       </div>
     </div>
   </div>
