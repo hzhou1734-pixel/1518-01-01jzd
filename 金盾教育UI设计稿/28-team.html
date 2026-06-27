@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>&#25512;&#24191;&#22242;&#38431; - &#37329;&#30462;&#25945;&#32946;&#20998;&#38144;&#23567;&#31243;&#24207;</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#E8E8ED;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.phone-frame{width:375px;height:812px;background:#0d0d0d;border-radius:44px;position:relative;box-shadow:0 0 0 3px #1a1a1a,0 0 0 6px #0d0d0d,0 0 0 8px #222,0 12px 50px rgba(0,0,0,0.35);overflow:hidden}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;background:#F5F5F5;border-radius:40px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:210px;height:30px;background:#0d0d0d;border-radius:0 0 20px 20px;z-index:100}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(0,0,0,0.15);border-radius:3px;z-index:100}
+.status-bar{height:54px;background:linear-gradient(180deg,#FFFAF8,#FFF);display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px 10px;font-size:12px;font-weight:600;flex-shrink:0}
+.status-time{font-weight:600;letter-spacing:0.5px}
+.status-icons{display:flex;align-items:center;gap:6px}
+.nav-bar{height:44px;background:linear-gradient(180deg,#FFFDFA,#FFF);display:flex;align-items:center;padding:0 12px;flex-shrink:0;border-bottom:1px solid rgba(233,51,35,0.06)}
+.nav-back{font-size:20px;color:#333;cursor:pointer;padding:6px 8px;text-decoration:none}
+.nav-back:active{opacity:0.5}
+.nav-title{flex:1;text-align:center;font-size:15px;font-weight:600;color:#000;padding-right:40px}
+.scroll-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+.filter-row{display:flex;align-items:center;gap:8px;padding:12px 12px 8px}
+.search-box{display:flex;align-items:center;background:#fff;border-radius:10px;padding:8px 12px;gap:8px;flex:1;min-width:0}
+.search-box svg{flex-shrink:0}
+.search-input{border:none;outline:none;font-size:13px;flex:1;font-family:inherit;background:transparent;min-width:0}
+.search-input::placeholder{color:#C0C0C0}
+.deal-filter{display:flex;background:#fff;border-radius:10px;padding:3px;gap:0;flex-shrink:0}
+.deal-filter-btn{padding:6px 10px;font-size:12px;color:#888;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap;font-weight:500}
+.deal-filter-btn.active{background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;font-weight:600}
+.team-tabs{display:flex;margin:0 12px 10px;background:#fff;border-radius:10px;padding:3px;gap:0}
+.team-tab{flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:500;color:#888;border-radius:8px;cursor:pointer;transition:all .18s}
+.team-tab.active{background:linear-gradient(135deg,#E93323,#FF6B35);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(233,51,35,0.25)}
+.member-list{padding:0 12px}
+.member-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.member-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:14px;font-weight:500;color:#333;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.deal-tag{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;flex-shrink:0}
+.deal-tag.yes{background:#E8F5E9;color:#07C160}
+.deal-tag.no{background:#F5F5F5;color:#B0B0B0}
+.member-time{font-size:11px;color:#B0B0B0;margin-top:2px}
+.member-earn{font-size:15px;font-weight:600;color:#E93323;flex-shrink:0;text-align:right}
+.member-earn-sub{font-size:10px;color:#B0B0B0;font-weight:400}
+.member-source{font-size:10px;color:#B0B0B0;margin-top:1px}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="phone-screen">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M1 9l4 0c0-4 2-6 6-6s6 2 6 6" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M1 14l2 0c0-5 3-8 8-8s8 3 8 8l2 0" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="12" cy="18" r="2" fill="#333"/></svg>
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px"><rect x="4" y="8" width="16" height="12" rx="2" stroke="#333" stroke-width="2" fill="none"/><line x1="8" y1="8" x2="8" y2="6" stroke="#333" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="8" x2="16" y2="6" stroke="#333" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="16" x2="20" y2="16" stroke="#333" stroke-width="1" opacity="0.3"/></svg>
+      </div>
+    </div>
+    <div class="nav-bar"><span class="nav-back" onclick="goBack()">←</span><span class="nav-title">&#25512;&#24191;&#22242;&#38431;</span></div>
+    <div class="scroll-content">
+      <div class="filter-row">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="11" cy="11" r="6" fill="none" stroke="#C0C0C0" stroke-width="1.5"/><path d="M20 20l-3.5-3.5" stroke="#C0C0C0" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input class="search-input" placeholder="&#25628;&#32034;&#22242;&#38431;&#25104;&#21592;" oninput="filterMembers()" id="searchInput">
+        </div>
+        <div class="deal-filter">
+          <div class="deal-filter-btn active" onclick="filterDeal(this,'all')">&#20840;&#37096;</div>
+          <div class="deal-filter-btn" onclick="filterDeal(this,'yes')">&#24050;&#25104;&#20132;</div>
+          <div class="deal-filter-btn" onclick="filterDeal(this,'no')">&#26410;&#25104;&#20132;</div>
+        </div>
+      </div>
+      <div class="team-tabs">
+        <div class="team-tab active" onclick="switchTeam(this,'level1')">&#19968;&#32423;&#22242;&#38431;&#65288;7&#65289;</div>
+        <div class="team-tab" onclick="switchTeam(this,'level2')">&#20108;&#32423;&#22242;&#38431;&#65288;5&#65289;</div>
+      </div>
+      <div class="member-list" id="memberListLevel1">
+        <div class="member-card" data-name="&#26446;&#26195;&#26126;" data-earn="2860.00" data-time="2026-01" data-deal="yes">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#FF6B35,#FF9A9E)">&#26446;</div>
+          <div class="member-info">
+            <div class="member-name">&#26446;&#26195;&#26126;<span class="deal-tag yes">&#24050;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-01-08 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥2,860.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#29579;&#33459;" data-earn="1850.00" data-time="2026-02" data-deal="yes">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#A1E8CC,#4ECDC4)">&#29579;</div>
+          <div class="member-info">
+            <div class="member-name">&#29579;&#33459;<span class="deal-tag yes">&#24050;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-02-15 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥1,850.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#24352;&#20255;" data-earn="1520.00" data-time="2026-02" data-deal="yes">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#FECF6A,#F0A500)">&#24352;</div>
+          <div class="member-info">
+            <div class="member-name">&#24352;&#20255;<span class="deal-tag yes">&#24050;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-02-28 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥1,520.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#36213;&#20029;&#22918;" data-earn="980.00" data-time="2026-03" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(to bottom,#FFB5A7,#FF6B6B)">&#36213;</div>
+          <div class="member-info">
+            <div class="member-name">&#36213;&#20029;&#22918;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-03-10 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥980.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#38472;&#24314;" data-earn="650.00" data-time="2026-04" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#B8C5FF,#7B8CDE)">&#38472;</div>
+          <div class="member-info">
+            <div class="member-name">&#38472;&#24314;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-04-02 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥650.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#21016;&#23159;&#23159;" data-earn="420.00" data-time="2026-05" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#E8D5B7,#C9A96E)">&#21016;</div>
+          <div class="member-info">
+            <div class="member-name">&#21016;&#23159;&#23159;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-05-18 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥420.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#21608;&#28023;" data-earn="240.00" data-time="2026-06" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#D5E8D4,#82B366)">&#21608;</div>
+          <div class="member-info">
+            <div class="member-name">&#21608;&#28023;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-06-01 &#21152;&#20837;</div>
+          </div>
+          <div class="member-earn">¥240.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+      </div>
+      <div class="member-list" id="memberListLevel2" style="display:none">
+        <div class="member-card" data-name="&#21556;&#30922;" data-earn="860.00" data-time="2026-03" data-deal="yes">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#A1E8CC,#4ECDC4)">&#21556;</div>
+          <div class="member-info">
+            <div class="member-name">&#21556;&#30922;<span class="deal-tag yes">&#24050;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-03-22 &#21152;&#20837;</div>
+            <div class="member-source">&#26469;&#33258; &#26446;&#26195;&#26126;</div>
+          </div>
+          <div class="member-earn">¥860.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#40644;&#25935;" data-earn="520.00" data-time="2026-04" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#FFB5A7,#FF6B6B)">&#40644;</div>
+          <div class="member-info">
+            <div class="member-name">&#40644;&#25935;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-04-18 &#21152;&#20837;</div>
+            <div class="member-source">&#26469;&#33258; &#26446;&#26195;&#26126;</div>
+          </div>
+          <div class="member-earn">¥520.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#26519;&#33805;" data-earn="380.00" data-time="2026-05" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#FECF6A,#F0A500)">&#26519;</div>
+          <div class="member-info">
+            <div class="member-name">&#26519;&#33805;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-05-06 &#21152;&#20837;</div>
+            <div class="member-source">&#26469;&#33258; &#29579;&#33459;</div>
+          </div>
+          <div class="member-earn">¥380.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#37073;&#20975;" data-earn="210.00" data-time="2026-06" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(to bottom,#B8C5FF,#7B8CDE)">&#37073;</div>
+          <div class="member-info">
+            <div class="member-name">&#37073;&#20975;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-06-11 &#21152;&#20837;</div>
+            <div class="member-source">&#26469;&#33258; &#24352;&#20255;</div>
+          </div>
+          <div class="member-earn">¥210.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+        <div class="member-card" data-name="&#23385;&#24742;" data-earn="160.00" data-time="2026-06" data-deal="no">
+          <div class="member-avatar" style="background:linear-gradient(135deg,#E8D5B7,#C9A96E)">&#23385;</div>
+          <div class="member-info">
+            <div class="member-name">&#23385;&#24742;<span class="deal-tag no">&#26410;&#25104;&#20132;</span></div>
+            <div class="member-time">2026-06-20 &#21152;&#20837;</div>
+            <div class="member-source">&#26469;&#33258; &#36213;&#20029;&#22918;</div>
+          </div>
+          <div class="member-earn">¥160.00<div class="member-earn-sub">&#25512;&#24191;&#25910;&#30410;</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+<script>
+function navigateTo(url){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");var c=location.pathname.split("/").pop()||"index.html";s.push(c);localStorage.setItem("jd_nav",JSON.stringify(s));}catch(e){}location.href=url;}
+function goBack(){try{var s=JSON.parse(localStorage.getItem("jd_nav")||"[]");while(s.length){var p=s.pop();if(p!==(location.pathname.split("/").pop()||"")){localStorage.setItem("jd_nav",JSON.stringify(s));location.href=p;return;}}}catch(e){}location.href="index.html";}
+function switchTeam(btn, level){
+  document.querySelectorAll('.team-tab').forEach(function(t){t.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById('memberListLevel1').style.display = level==='level1' ? '' : 'none';
+  document.getElementById('memberListLevel2').style.display = level==='level2' ? '' : 'none';
+  document.querySelectorAll('.deal-filter-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelector('.deal-filter-btn').classList.add('active');
+  currentDealFilter = 'all';
+  document.getElementById('searchInput').value = '';
+  showAll();
+}
+var currentDealFilter = 'all';
+function filterDeal(btn, type){
+  currentDealFilter = type;
+  document.querySelectorAll('.deal-filter-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  applyFilters();
+}
+function filterMembers(){ applyFilters(); }
+function showAll(){
+  document.querySelectorAll('#memberListLevel1 .member-card').forEach(function(c){c.style.display=''});
+  document.querySelectorAll('#memberListLevel2 .member-card').forEach(function(c){c.style.display=''});
+}
+function applyFilters(){
+  var keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+  var activeList = document.getElementById('memberListLevel1').style.display!=='none' ? 'memberListLevel1' : 'memberListLevel2';
+  document.querySelectorAll('#'+activeList+' .member-card').forEach(function(c){
+    var nameMatch = !keyword || c.dataset.name.toLowerCase().includes(keyword);
+    var dealMatch = currentDealFilter==='all' || c.dataset.deal===currentDealFilter;
+    c.style.display = (nameMatch && dealMatch) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
